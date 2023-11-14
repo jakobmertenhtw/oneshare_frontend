@@ -1,0 +1,14 @@
+{
+  "name": "oneshare_frontend",
+  "version": "1.0.0",
+  "description": "oneshare frontend",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": " (ISC)",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
