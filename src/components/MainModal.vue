@@ -2,25 +2,26 @@
 import SignIn from './SignIn.vue';
 import SignUp from './SignUp.vue';
 export default {
-    props: {
-        modalActive: {
-            type: Boolean,
-            default: false
-        }, 
-        isSignUp: {
-            type: Boolean,
-            default: true
-        }
+  name: 'MainModal',
+  props: {
+    modalActive: {
+      type: Boolean,
+      default: false
     },
-    setup(props, { emit }) {
-        const closeModal = () => {
-            emit("closeModal");
-        };
-        return {
-            closeModal
-        };
-    },
-    components: { SignIn, SignUp }
+    isSignUp: {
+      type: Boolean,
+      default: false
+    }
+  },
+  components: { SignUp, SignIn },
+  setup(props, { emit }) {
+    const closeModal = () => {
+      emit("closeModal");
+    };
+    return {
+      closeModal
+    };
+  }
 }
 </script>
 
@@ -31,8 +32,8 @@ export default {
       <button class="close-btn" @click="closeModal"><img src="./icons/close_icon.svg" alt="X"></button>
     </div>
     <div class="modal-content">
-      <SignIn v-show="!isSignUp" />
-      <SignUp v-show="isSignUp" />
+      <SignIn v-if="!isSignUp" />
+      <SignUp v-if="isSignUp" />
     </div>
   </div>
 </template>
@@ -46,10 +47,10 @@ export default {
   z-index: 100;
   background-color: #F4F4F4;
   width: 90vw;
-  max-width: 35rem;
-  min-height: 30rem;
+  max-width: 45rem;
   border-radius: 20px;
 }
+
 .modal-backround {
   position: fixed;
   top: 0;
@@ -63,9 +64,11 @@ export default {
   border: none;
   border-radius: 0;
 }
+
 .modal-content {
   margin: 3rem 2rem;
 }
+
 .close-btn {
   border: none;
   background-color: transparent;
@@ -75,7 +78,7 @@ export default {
   top: 0;
   padding: 20px;
 }
+
 .close-btn:hover {
   cursor: pointer;
-}
-</style>
+}</style>

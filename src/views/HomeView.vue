@@ -12,13 +12,23 @@ export default {
     MainModal
   }, 
   setup() {
+    const isSignUp = ref(false);
+    const makeSignUp = () => {
+      isSignUp.value = true;
+      toggleModal();
+    }
+    const makeSignIn = () => {
+      isSignUp.value = false;
+      toggleModal();
+    }
     const modalActive = ref(false);
     const toggleModal = () => {
       modalActive.value = !modalActive.value;
     };
     return {
       modalActive, 
-      toggleModal
+      toggleModal, 
+      makeSignIn, makeSignUp, isSignUp
     }
   }
 }
@@ -26,12 +36,12 @@ export default {
 </script>
 
 <template>
-  <MainModal @closeModal="toggleModal" :modalActive=modalActive>
+  <MainModal @closeModal="toggleModal" :isSignUp=isSignUp :modalActive=modalActive>
     <div class="modal-content">
       <h1>Test</h1>
     </div>
   </MainModal>
-  <MainHeader @openModal="toggleModal" />
+  <MainHeader @openModal_SIGNIN="makeSignIn" @openModal_SIGNUP="makeSignUp" />
   <div class="content_container">
     <div class="headline-container">
       <h1>Choose your genre</h1>

@@ -1,11 +1,15 @@
 <script>
 export default {
   setup(props, {emit}) {
-    const openModal = () => {
-      emit("openModal");
+    const openModal_SIGNIN = () => {
+      emit("openModal_SIGNIN");
+    }
+    const openModal_SIGNUP = () => {
+      emit("openModal_SIGNUP");
     }
     return {
-      openModal
+      openModal_SIGNIN, 
+      openModal_SIGNUP
     }
   }
 
@@ -14,8 +18,8 @@ export default {
 <template>
   <header>
     <div class="sign_btns">
-      <button id="signin_btn" @click="openModal">SIGN UP</button>
-      <button id="signup_btn" @click="openModal">SIGN IN</button>
+      <button id="signin_btn" @click="openModal_SIGNUP">SIGN UP</button>
+      <button id="signup_btn" @click="openModal_SIGNIN">SIGN IN</button>
     </div>
   </header>
 </template>
