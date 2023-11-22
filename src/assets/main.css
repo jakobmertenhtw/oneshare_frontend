@@ -1,0 +1,17 @@
+body {
+    background-color: #EAEAEA;
+}
+button {
+    padding: 12px 20px;
+    border-radius: 10px;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 2s ease;
+}
+.content_container {
+    width: 80vw;
+    max-width: 1300px;
+    margin: 0 auto;
+}
