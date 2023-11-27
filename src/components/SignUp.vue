@@ -1,15 +1,29 @@
 <script>
+import { useStore } from 'vuex';
+
 export default {
   name: 'SignUp',
   setup() {
+
+    const store = useStore();
+
     const signin = () => {
       window.alert("test - TODO: Implement signin");
     }
+
+    const signup = () => {
+        // TODO: Implement logic that checks if fields re empty
+        store.dispatch('login');
+    }
+
     return {
-      signin
+      signin, 
+      signup
     }
   }
 }
+
+
 </script>
 
 <template>
@@ -25,7 +39,7 @@ export default {
         <input type="password" id="password_field" placeholder="Password (*)">
     </form>
     <div class="send-container">
-        <button id="signup-btn">SIGN UP</button>
+        <button id="signup-btn" @click="signup">SIGN UP</button>
         <p>Already have an account? <span @click="signin">Sign in</span></p>
     </div>
 </template>
