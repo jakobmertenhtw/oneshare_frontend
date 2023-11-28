@@ -34,7 +34,9 @@ export default store;
 watch(() => store.state.loggedIn, (loggedIn) => {
     if (loggedIn) {
         router.push({ name: 'user' });
+        localStorage.setItem('loggedIn', true);
     } else {
         router.push({ name: 'home' });
+        localStorage.removeItem('loggedIn');
     }
 });
