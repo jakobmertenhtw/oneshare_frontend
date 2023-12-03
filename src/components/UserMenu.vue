@@ -7,16 +7,30 @@ export default {
         const username = ref('Lil Uzi'); 
         const user_description = ref('Rapper and Producer');
 
+        const data = ref(null);
+
         const store = useStore();
 
         const signout = () => {
             store.dispatch('logout');
         }
 
+        const testAjax = async () => {
+            const response = await fetch('http://localhost:8080/users/1');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            data.value = await response.json();
+            console.log(data.value);
+        }
+
         return {
             username, 
             user_description, 
-            signout
+            data, 
+            signout, 
+            testAjax
+
         }
     }
 }
@@ -38,7 +52,9 @@ export default {
             </ul>
         </div>
         <button id="logout_btn" @click="signout">Logout</button>
+        <button @click="testAjax">test ajax request</button>
     </div>
+    <p>{{ this.data }}</p>
 </template>
 
 <style scoped>
