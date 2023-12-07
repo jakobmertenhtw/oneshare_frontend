@@ -16,12 +16,53 @@ export default {
         }
 
         const testAjax = async () => {
-            const response = await fetch('http://localhost:8080/users/1');
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+
+            let userID = parseInt(document.getElementById('userid_field').value);
+            if (isNaN(userID) && userID >= 1 && userID <= 100) {
+                userID = 1;
+                console.log('USERID failed and default is 1');
             }
-            data.value = await response.json();
-            console.log(data.value);
+
+            const endpoint = 'http://localhost:8080/users/' + userID;
+
+
+            const requestedOptions = {
+                method: 'GET',
+                redirect : 'follow',
+            }
+
+            fetch(endpoint, requestedOptions)
+                .then(response => response.json())
+                .then(result => data.value = result);
+        }
+
+        const testAjaxPost = async () => {
+            console.log('test ajax post');
+            const endpoint = 'http://localhost:8080/users';
+
+            const test_data = {
+                username: 'test',
+                firstName: 'test', 
+                lastName: 'test',
+                mail: 'test@mail.com', 
+                phoneNumber: 39230492,
+            }
+
+            const requestedOptions = {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json'
+                }, 
+                body: JSON.stringify(test_data)
+            }
+            fetch(endpoint, requestedOptions)
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result)
+                })
+                .catch(error => {
+                    console.log('error: ' + error)
+                });
         }
 
         return {
@@ -29,8 +70,8 @@ export default {
             user_description, 
             data, 
             signout, 
-            testAjax
-
+            testAjax, 
+            testAjaxPost
         }
     }
 }
@@ -52,7 +93,9 @@ export default {
             </ul>
         </div>
         <button id="logout_btn" @click="signout">Logout</button>
+        <input type="number" placeholder="UserID" id="userid_field">
         <button @click="testAjax">test ajax request</button>
+        <button @click="testAjaxPost">test ajax post</button>
     </div>
     <p>{{ this.data }}</p>
 </template>
