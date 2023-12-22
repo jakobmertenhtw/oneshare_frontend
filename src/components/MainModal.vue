@@ -21,7 +21,7 @@ export default {
     return {
       closeModal
     };
-  }
+  }, 
 }
 </script>
 
@@ -29,7 +29,7 @@ export default {
   <button class="modal-backround" v-show="modalActive" @click="closeModal"></button>
   <div class="main-modal" v-show="modalActive">
     <div class="close-container">
-      <button class="close-btn" @click="closeModal"><img src="./icons/close_icon.svg" alt="X"></button>
+      <button class="close-btn" @click="closeModal"><img src="./icons/close_icon.svg" alt="close"></button>
     </div>
     <div class="modal-content">
       <SignIn v-if="!isSignUp" />

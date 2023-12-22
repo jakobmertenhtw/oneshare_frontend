@@ -23,7 +23,10 @@ export default {
                 console.log('USERID failed and default is 1');
             }
 
-            const endpoint = 'http://localhost:8080/users/' + userID;
+            
+            const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
+
+            const endpoint = baseURL + 'users/' + userID;
 
 
             const requestedOptions = {

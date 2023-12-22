@@ -1,3 +1,8 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 :root {
     font-family: 'Montserrat', sans-serif;
 }
@@ -11,15 +16,18 @@ button {
     outline: none;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: .9rem;
     transition: all .4s ease;
 }
 button:hover {
     cursor: pointer;
-    transform: scale(1.1);
+    opacity: .8;
 }
 .content_container {
     width: 80vw;
     max-width: 1300px;
     margin: 0 auto;
+}
+input {
+    font-family: 'Montserrat', sans-serif;
 }
