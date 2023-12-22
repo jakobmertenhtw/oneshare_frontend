@@ -47,6 +47,57 @@ export default {
           datum: "2021-06-01",
         },
       ],
+      genres: [
+        {
+          id: 1,
+          name: 'Jazz',
+          imagepath: './images/jazz.png',
+          imagealt: 'Jazz Genre'
+        },
+        {
+          id: 2,
+          name: 'Klassik',
+          imagepath: './images/klassik.png',
+          imagealt: 'Rock Genre'
+        },
+        {
+          id: 3,
+          name: 'Hip Hop',
+          imagepath: './images/hiphop.png',
+          imagealt: 'Hip Hop Genre'
+        },
+        {
+          id: 4,
+          name: 'Pop',
+          imagepath: './images/pop.png',
+          imagealt: 'Pop Genre'
+        },
+        {
+          id: 5,
+          name: 'EDM',
+          imagepath: './images/edm.png',
+          imagealt: 'EDM Genre'
+        },
+        {
+          id: 6,
+          name: 'Heavy Metal',
+          imagepath: './images/heavymetal.png',
+          imagealt: 'Heavy Metal Genre'
+        },
+        {
+          id: 7,
+          name: 'Rock',
+          imagepath: './images/rock.png',
+          imagealt: 'Rock Genre'
+        },
+        {
+          id: 8,
+          name: 'Funk',
+          imagepath: './images/funk.png',
+          imagealt: 'Funk Genre'
+        }
+      ], 
+      genreObject: null, 
       showCreatePost: false,
     };
   },
@@ -60,10 +111,17 @@ export default {
       document.body.style.overflow = "auto";
     },
   },
-  async mounted() {
+  mounted() {
     const route = useRoute();
-    const genre_id = ref(route.params.id);
-    console.log(genre_id);
+    const genre_id = ref(parseInt(route.params.id.split("=")[1]));
+    this.genres.forEach(genre => {
+      if (genre.id == genre_id.value) {
+        this.genreObject = genre;
+      }
+    });
+
+    console.log(this.genreObject.name);
+
   },
   components: { BackComponent, PostComponent, CreatePostComponent },
 };
@@ -89,7 +147,7 @@ export default {
       </button>
     </div>
     <div class="content-container">
-      <h1>Jazz</h1>
+      <h1 v-if="genreObject">{{genreObject.name}}</h1>
     </div>
   </header>
   <div class="posts-content">

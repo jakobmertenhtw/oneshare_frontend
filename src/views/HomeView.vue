@@ -53,7 +53,7 @@ export default {
         },
         {
           id: 7,
-          name: 'rock',
+          name: 'Rock',
           imagepath: './images/rock.png',
           imagealt: 'Rock Genre'
         },
