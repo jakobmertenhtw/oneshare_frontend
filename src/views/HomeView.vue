@@ -11,6 +11,61 @@ export default {
     MainHeader,
     MainModal
   }, 
+  data() {
+    return {
+      // Schreibe mir eine Liste für genres mit 12 elemente, alle haben eine id, name, imagepath und imagealt
+      genres: [
+        {
+          id: 1,
+          name: 'Jazz',
+          imagepath: './images/jazz.png',
+          imagealt: 'Jazz Genre'
+        },
+        {
+          id: 2,
+          name: 'Klassik',
+          imagepath: './images/klassik.png',
+          imagealt: 'Rock Genre'
+        },
+        {
+          id: 3,
+          name: 'Hip Hop',
+          imagepath: './images/hiphop.png',
+          imagealt: 'Hip Hop Genre'
+        },
+        {
+          id: 4,
+          name: 'Pop',
+          imagepath: './images/pop.png',
+          imagealt: 'Pop Genre'
+        },
+        {
+          id: 5,
+          name: 'EDM',
+          imagepath: './images/edm.png',
+          imagealt: 'EDM Genre'
+        },
+        {
+          id: 6,
+          name: 'Heavy Metal',
+          imagepath: './images/heavymetal.png',
+          imagealt: 'Heavy Metal Genre'
+        },
+        {
+          id: 7,
+          name: 'rock',
+          imagepath: './images/rock.png',
+          imagealt: 'Rock Genre'
+        },
+        {
+          id: 8,
+          name: 'Funk',
+          imagepath: './images/funk.png',
+          imagealt: 'Funk Genre'
+        }
+      ]
+    }
+  },
   setup() {
     const isSignUp = ref(false);
     const makeSignUp = () => {
@@ -49,7 +104,11 @@ export default {
         create posts and connect to other musicians. </h2>
     </div>
     <div class="genre-container">
-      <GenreComponent genre-title="Jazz" image-url="./images/jazz.png" image-alt="Jazz Genre"></GenreComponent>
+      <ul class="item" v-for="item in genres" :key="item.id">
+      <li>
+        <GenreComponent :genre="item" />
+      </li>
+    </ul>
     </div>
   </div>
 </template>
@@ -64,10 +123,23 @@ h2 {
   font-size: 1.25rem;
   color: #000;
   opacity: .8;
-  font-weight: 500;
-  margin-top: -10px
+  font-weight: 400;
+  margin-top: .5rem; 
 };
 .content_container {
   margin-top: 3rem;
+}
+.genre-container {
+  margin-top: 2rem;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-row-gap: 3rem;
+  list-style-type: none;
+  padding: 0;
+}
+ul li {
+  display: inline-block;
 }
 </style>
