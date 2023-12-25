@@ -76,7 +76,8 @@ form input {
   flex: 1;
 }
 input:focus {
-  background-color: rgba(0, 0, 0, .025);
+  background-color: rgba(0, 0, 0, .015);
+  border: 1px solid black;
 }
 .buttons-container {
   margin-top: 2rem;
