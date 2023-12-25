@@ -89,7 +89,7 @@ export default {
     <div class="menu-links-con">
       <ul>
         <li>
-          <router-link class="menu_link" to="/user"
+          <router-link class="menu_link" to="/user/dashboard"
             ><span class="link_text">Dashboard</span
             ><span class="link_icon"><img src="./icons/right.svg" /></span
           ></router-link>

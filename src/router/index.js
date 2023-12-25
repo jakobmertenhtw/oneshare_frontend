@@ -18,18 +18,22 @@ const router = createRouter({
     path: '/user', 
     name: 'user',
     component: UserView, 
+    redirect: '/user/dashboard', 
     children: [
       {
-        path: '', 
-        component: UserDashboardView
+        path: 'dashboard', 
+        component: UserDashboardView,
+        name: 'user.dashboard'
       }, 
       {
         path: 'posts', 
-        component: UserPostsView
+        component: UserPostsView,
+        name: 'user.posts'
       }, 
       {
         path: 'profile',
-        component: UserInformationView
+        component: UserInformationView,
+        name: 'user.profile'
       }
     ] 
    }, 
