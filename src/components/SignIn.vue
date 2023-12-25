@@ -1,14 +1,15 @@
 <script>
 export default {
   name: 'SignIn',
-  setup() {
+  setup(props, {emit}) {
     const signup = () => {
-      window.alert("test - TODO: Implement signup");
+      emit('update:isSignUp', true);
     }
     return {
       signup
     }
-  }
+  }, 
+  emits: ['update:isSignUp']
 }
 
 </script>

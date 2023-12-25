@@ -3,12 +3,12 @@ import { useStore } from 'vuex';
 
 export default {
   name: 'SignUp',
-  setup() {
+  setup(props, { emit }) {
 
     const store = useStore();
 
     const signin = () => {
-      window.alert("test - TODO: Implement signin");
+        emit('update:isSignUp', false);
     }
 
     const signup = () => {
@@ -20,7 +20,8 @@ export default {
       signin, 
       signup
     }
-  }
+  }, 
+  emits: ['update:isSignUp']
 }
 
 
@@ -28,7 +29,6 @@ export default {
 
 <template>
     <h1>Sign Up</h1>
-    <p id="signup_label">The fields with * are required.</p>
     <form>
         <div class="name_fields">
             <input type="text" id="firstname_field" placeholder="Firstname (*)">
@@ -50,14 +50,6 @@ h1 {
     font-family: 'Montserrat', sans-serif;
     font-size: 2rem;
     font-weight: 600;
-}
-#signup_label {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #000;
-    opacity: .8;
-    margin-top: -10px;
 }
 form {
     margin-top: 20px;

@@ -1,39 +1,51 @@
 <script>
-import SignIn from './SignIn.vue';
-import SignUp from './SignUp.vue';
+import SignIn from "./SignIn.vue";
+import SignUp from "./SignUp.vue";
 export default {
-  name: 'MainModal',
+  name: "MainModal",
   props: {
     modalActive: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isSignUp: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
+  emits: ["closeModal"],
   components: { SignUp, SignIn },
   setup(props, { emit }) {
     const closeModal = () => {
       emit("closeModal");
     };
-    return {
-      closeModal
+    const updateIsSignUp = (value) => {
+      emit("update:isSignUp", value);
     };
-  }, 
-}
+
+    return {
+      closeModal,
+      updateIsSignUp
+    };
+  },
+};
 </script>
 
 <template>
-  <button class="modal-backround" v-show="modalActive" @click="closeModal"></button>
+  <button
+    class="modal-backround"
+    v-show="modalActive"
+    @click="closeModal"
+  ></button>
   <div class="main-modal" v-show="modalActive">
     <div class="close-container">
-      <button class="close-btn" @click="closeModal"><img src="./icons/close_icon.svg" alt="close"></button>
+      <button class="close-btn" @click="closeModal">
+        <img src="./icons/close_icon.svg" alt="close" />
+      </button>
     </div>
     <div class="modal-content">
-      <SignIn v-if="!isSignUp" />
-      <SignUp v-if="isSignUp" />
+      <SignIn v-if="!isSignUp" @update:isSignUp="updateIsSignUp" />
+      <SignUp v-if="isSignUp" @update:isSignUp="updateIsSignUp" />
     </div>
   </div>
 </template>
@@ -45,7 +57,7 @@ export default {
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 100;
-  background-color: #F4F4F4;
+  background-color: #f4f4f4;
   width: 90vw;
   max-width: 45rem;
   border-radius: 20px;
@@ -59,7 +71,7 @@ export default {
   width: 100vw;
   height: 100vh;
   background-color: #000;
-  opacity: .4;
+  opacity: 0.4;
   outline: none;
   border: none;
   border-radius: 0;
@@ -81,4 +93,5 @@ export default {
 
 .close-btn:hover {
   cursor: pointer;
-}</style>
+}
+</style>

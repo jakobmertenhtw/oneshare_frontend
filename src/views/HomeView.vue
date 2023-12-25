@@ -91,10 +91,7 @@ export default {
 </script>
 
 <template>
-  <MainModal @closeModal="toggleModal" :isSignUp=isSignUp :modalActive=modalActive>
-    <div class="modal-content">
-      <h1>Test</h1>
-    </div>
+  <MainModal @closeModal="toggleModal" :isSignUp=isSignUp :modalActive=modalActive @update:isSignUp="value => isSignUp = value">
   </MainModal>
   <MainHeader @openModal_SIGNIN="makeSignIn" @openModal_SIGNUP="makeSignUp" />
   <div class="content_container">
