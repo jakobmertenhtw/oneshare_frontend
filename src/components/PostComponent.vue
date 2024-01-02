@@ -6,6 +6,7 @@ export default {
     post: Object,
   },
   mounted() {
+    console.log(this.post);
   },
   data() {
     return {

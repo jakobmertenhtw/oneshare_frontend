@@ -4,7 +4,7 @@ import UserMenu from '../components/UserMenu.vue';
 
 export default {
     name: "UserView",
-    components: { UserMenu }
+    components: { UserMenu },
 }
 </script>
 

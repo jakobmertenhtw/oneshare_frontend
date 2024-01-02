@@ -4,49 +4,15 @@ import { useRoute } from "vue-router";
 import BackComponent from "../components/BackComponent.vue";
 import PostComponent from "../components/PostComponent.vue";
 import CreatePostComponent from "../components/CreatePostComponent.vue";
+import LoadingComponent from "../components/LoadingComponent.vue";
 
 export default {
   name: "GenreView",
   data() {
     return {
-      list: [
-        {
-          postID: 1,
-          userID: 1,
-          genreID: 1,
-          title: "Test Title 1",
-          text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-          likes: 3,
-          datum: "2021-06-01",
-        },
-        {
-          postID: 2,
-          userID: 1,
-          genreID: 1,
-          title: "Test Title 2",
-          text: "Test Text 3",
-          likes: 3,
-          datum: "2021-06-01",
-        },
-        {
-          postID: 3,
-          userID: 1,
-          genreID: 1,
-          title: "Test Title 3",
-          text: "Test Text 3",
-          likes: 102,
-          datum: "2021-06-01",
-        },
-        {
-          postID: 4,
-          userID: 1,
-          genreID: 1,
-          title: "Test Title 4",
-          text: "Test Text 4",
-          likes: 3,
-          datum: "2021-06-01",
-        },
-      ],
+      list: [],
+
+
       genres: [
         {
           id: 1,
@@ -99,6 +65,7 @@ export default {
       ], 
       genreObject: null, 
       showCreatePost: false,
+      showPostList: false
     };
   },
   methods: {
@@ -110,6 +77,65 @@ export default {
       this.showCreatePost = false;
       document.body.style.overflow = "auto";
     },
+    getPostsByGenreId(genreID) {
+
+
+      const baseURL = "http://localhost:8080";
+      const endpoint = baseURL + "/postsByGenre/" + genreID;
+
+      const requestedOptions = {
+        method: 'GET',
+        redirect : 'follow',
+      }
+
+      fetch(endpoint, requestedOptions)
+        .then((response) => response.json())
+        .then((data) => {
+            
+          this.postsList = data;
+          
+        });
+    }, 
+    getPostsUser() {
+      this.list.forEach(post => {
+
+        const baseURL = "http://localhost:8080";
+        const endpoint = baseURL + "/users/" + post.userID;
+
+        const requestedOptions = {
+          method: 'GET',
+          redirect : 'follow',
+        }
+
+        fetch(endpoint, requestedOptions)
+          .then((response) => response.json())
+          .then((data) => {
+            post.user = data;
+            
+          });
+
+      });
+    }, 
+    getMessagesForPost() {
+      this.list.forEach(post => {
+        const baseURL = "http://localhost:8080";
+        const endpoint = baseURL + "/messages/" + post.postID;
+
+        const requestedOptions = {
+          method: 'GET',
+          redirect : 'follow',
+        }
+
+        fetch(endpoint, requestedOptions)
+          .then((response) => response.json())
+          .then((data) => {
+            post.messages = data;
+            
+          });
+
+      })
+    }
+
   },
   mounted() {
     const route = useRoute();
@@ -119,11 +145,15 @@ export default {
         this.genreObject = genre;
       }
     });
-
-    console.log(this.genreObject.name);
+    this.getPostsByGenreId(genre_id.value);
+    this.getPostsUser();
+    this.getMessagesForPost();
+    this.showPostList = true;
+    console.log(this.list);
 
   },
-  components: { BackComponent, PostComponent, CreatePostComponent },
+
+  components: { BackComponent, PostComponent, CreatePostComponent, LoadingComponent },
 };
 </script>
 
@@ -150,7 +180,10 @@ export default {
       <h1 v-if="genreObject">{{genreObject.name}}</h1>
     </div>
   </header>
-  <div class="posts-content">
+  <div class="loader-container" v-if="!showPostList">
+    <LoadingComponent size="large" color="#000" />
+  </div>
+  <div class="posts-content" v-if="showPostList">
     <ul class="item" v-for="item in list" :key="item.id">
       <li>
         <PostComponent :post="item" />
@@ -239,4 +272,12 @@ ul {
   list-style: none;
   margin-top: 3rem;
 }
+.loader-container {
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 15rem;
+}
+
 </style>

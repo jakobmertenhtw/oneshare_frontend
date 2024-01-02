@@ -12,7 +12,7 @@ app.use(store)
 
 function checkLoogedIn() {
     if (localStorage.getItem('loggedIn')) {
-        store.dispatch('login');
+        store.dispatch('login', localStorage.getItem('loggedIn'));
     } else {
         store.dispatch('logout');
     }

@@ -15,8 +15,7 @@ export default {
   }, 
 
   mounted() {
-    console.log(this.genre.id);
-    console.log(this.genre.imagepath);
+    
   },
 };
 </script>

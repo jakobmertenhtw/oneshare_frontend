@@ -1,15 +1,70 @@
 <script>
+
+import { useStore } from "vuex";
+import { ref } from "vue";
+import LoadingComponent from "./LoadingComponent.vue";
+
 export default {
   name: 'SignIn',
   setup(props, {emit}) {
     const signup = () => {
       emit('update:isSignUp', true);
     }
+
+    const store = useStore();
+    const email = ref('');
+    const password = ref('');
+    const isLoading = ref(false);
+
+    const signin = () => {
+
+      if (email.value === '' || password.value === '') {
+        window.alert('Please fill out all required fields!');
+        return;
+      }
+
+      isLoading.value = true;
+
+      const endpoint = 'http://localhost:8080/users/mail';
+
+      const requestedOptions = {
+        method: 'GET', 
+        redirect: 'follow'
+      }
+
+
+      fetch(endpoint + '/' + email.value, requestedOptions)
+        .then(response => response.json())
+        .then(result => {
+          if (result.status === 500) {
+            window.alert(result.message);
+            isLoading.value = false;
+            return;
+          }
+          if (result.password !== password.value) {
+            window.alert('Wrong password!');
+            isLoading.value = false;
+            return;
+          }
+          isLoading.value = false;
+          store.dispatch('login', result.userID);
+        })
+        .catch(error => {
+          isLoading.value = false;
+          window.alert('Something went wrong in the connection! This is the error message: ' + error);
+        });
+    }
+
     return {
-      signup
+      signup, signin, 
+      email, password, 
+      isLoading
     }
   }, 
-  emits: ['update:isSignUp']
+  emits: ['update:isSignUp'], 
+  components: {
+    LoadingComponent
+  }
 }
 
 </script>
@@ -17,11 +72,14 @@ export default {
 <template>
   <h1>Sign In</h1>
   <form>
-    <input type="email" id="email_field" placeholder="Email adress (*)">
-    <input type="password" id="password_field" placeholder="Password (*)">
+    <input type="email" id="email_field" v-model="email" placeholder="Email adress (*)">
+    <input type="password" id="password_field" v-model="password" placeholder="Password (*)">
   </form>
   <div class="send-container">
-    <button id="signup-btn">SIGN IN</button>
+    <button id="signup-btn" @click="signin">
+      <span v-if="!isLoading">SIGN IN</span>
+      <LoadingComponent size="small" color="#fff" v-if="isLoading" />
+    </button>
     <p>Don't have an account? <span @click="signup">Sign up</span></p>
   </div>
 </template>
