@@ -5,6 +5,12 @@ import UserMenu from '../components/UserMenu.vue';
 export default {
     name: "UserView",
     components: { UserMenu },
+    mounted() {
+      if (!this.$store.getters.isLoggedIn) {
+        this.$router.push({ name: "home" });
+      }
+
+    }
 }
 </script>
 

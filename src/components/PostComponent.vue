@@ -3,21 +3,89 @@ import LoadingComponent from "./LoadingComponent.vue";
 export default {
   name: "PostComponent",
   props: {
-    post: Object,
+    post_prop: Object,
+  },
+  data() {
+    return {
+      post: this.post_prop,
+      userInput: "",
+      messageLoading: false,
+      likeLoading: false
+    };
   },
   mounted() {
     console.log(this.post);
   },
-  data() {
-    return {
-      userInput: "",
-      messageLoading: false,
-    };
-  },
   methods: {
     sendMessage() {
+
+      if (!this.$store.getters.isLoggedIn) {
+        window.alert("You need to be logged in to send a message!");
+        return;
+      }
+
+      let message = {
+        userID: this.post.userID,
+        postID: this.post.postID,
+        text: this.userInput,
+        datum: new Date(),
+        userFullName: this.post.user.firstName + " " + this.post.user.lastName, 
+        userColor: this.post.user.profileColor,
+      };
+
+      const baseURL = "http://localhost:8080/";
+
+      const endpoint = baseURL + 'message';
+      const requestedOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(message)
+      }
+
       this.messageLoading = true;
+
+      fetch(endpoint, requestedOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          window.alert("Message sent successully!");
+          console.log(data);
+          this.userInput = "";
+          this.messageLoading = false;
+        }).catch((error) => {
+          window.alert("Something went wrong! Please try again later!");
+          console.log(error);
+          this.messageLoading = false;
+        });
+
+
+
+
     },
+    likePost() {
+      this.likeLoading = true;
+
+      const baseURL = "http://localhost:8080/";
+      let endpoint = baseURL + 'likePost/' + this.post.postID;
+
+      const requestedOptions = {
+        method: 'PUT',
+        redirect : 'follow',
+      }
+
+      fetch(endpoint, requestedOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          this.post.likes = data.likes;
+          this.likeLoading = false;
+        }).catch((error) => {
+          window.alert("Something went wrong! Please try again later!");
+          console.log(error);
+          this.likeLoading = false;
+        });
+
+    }
   },
   computed: {
     buttonOpacity() {
@@ -39,31 +107,30 @@ export default {
       <div class="user-info_container">
         <div class="user_information">
           <div class="profile_picture">
-            <img
-              src="./images/example_profilepicture.png"
-              alt="Profile Picture"
-            />
+            <div class="profile-picture-background" :style="{backgroundColor: '#' + this.post.user.profileColor}"></div>
+            <p id="profilePictureText" :style="{color: '#' + this.post.user.profileColor}">{{ this.post.user.profilePicture }}</p>
           </div>
           <div class="profile-info-text">
-            <h4>Lil Uzi Vert</h4>
-            <p>Rapper</p>
+            <h4>{{ this.post.user.firstName + " " + this.post.user.lastName }}</h4>
+            <p>{{ this.post.user.mail }}</p>
           </div>
         </div>
         <div class="likes-container">
           <div class="like_button-container">
-            <button id="like-btn">
-              <img src="./icons/heart_icon.svg" alt="Like Post" />
+            <button id="like-btn" @click="likePost">
+              <img src="./icons/heart_icon.svg" alt="Like Post" v-if="!likeLoading" />
+              <LoadingComponent size="small" color="#fff" v-if ="likeLoading" />
             </button>
           </div>
           <p>{{ post.likes }} likes</p>
         </div>
       </div>
       <div class="post-main-container">
-        <h2 id="post-heading">{{ post.title }}</h2>
+        <h2 id="post-heading">{{ post.titel }}</h2>
         <p id="post-text">{{ post.text }}</p>
         <div class="see_more-container">
           <button>
-            <img src="./icons/see_more_icon.svg" alt="See More" />
+            <img src="./icons/see_more_icon.svg" alt="See More"/>
           </button>
         </div>
       </div>
@@ -121,11 +188,27 @@ export default {
   display: flex;
   gap: 10px;
 }
-.user_information img {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 7px;
+
+.profile_picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
 }
+.profile-picture-background {
+  width: 100%;
+  height: 100%;
+  opacity: .4;
+}
+#profilePictureText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
 .profile-info-text {
   display: flex;
   flex-direction: column;

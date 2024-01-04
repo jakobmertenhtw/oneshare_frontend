@@ -10,6 +10,9 @@ export default {
   name: "GenreView",
   data() {
     return {
+
+      userLoggedIn: false, 
+
       list: [],
 
 
@@ -77,8 +80,11 @@ export default {
       this.showCreatePost = false;
       document.body.style.overflow = "auto";
     },
-    getPostsByGenreId(genreID) {
 
+
+
+    // MAKE API CALLS AND WRITE DATA TO LIST
+    getPostsByGenreId(genreID) {
 
       const baseURL = "http://localhost:8080";
       const endpoint = baseURL + "/postsByGenre/" + genreID;
@@ -91,16 +97,24 @@ export default {
       fetch(endpoint, requestedOptions)
         .then((response) => response.json())
         .then((data) => {
-            
-          this.postsList = data;
-          
+          if (data.length === 0) {
+            window.alert("No posts found! Be the first to create one!");
+          }
+          this.list = data;
+          this.getUserInfosForEachPost();
         });
     }, 
-    getPostsUser() {
-      this.list.forEach(post => {
 
-        const baseURL = "http://localhost:8080";
-        const endpoint = baseURL + "/users/" + post.userID;
+    hideCreatePostAndLoadPosts() {
+      this.hideOverlayCreatePost();
+      this.getAllPostsInformaton();
+    }, 
+
+    getUserInfosForEachPost() {
+      const baseURL = "http://localhost:8080";
+
+      this.list.forEach(post => {
+        let endpoint = baseURL + "/users/" + post.userID;
 
         const requestedOptions = {
           method: 'GET',
@@ -111,33 +125,33 @@ export default {
           .then((response) => response.json())
           .then((data) => {
             post.user = data;
-            
           });
-
       });
-    }, 
-    getMessagesForPost() {
-      this.list.forEach(post => {
-        const baseURL = "http://localhost:8080";
-        const endpoint = baseURL + "/messages/" + post.postID;
 
-        const requestedOptions = {
-          method: 'GET',
-          redirect : 'follow',
-        }
+    },
 
-        fetch(endpoint, requestedOptions)
-          .then((response) => response.json())
-          .then((data) => {
-            post.messages = data;
-            
-          });
 
-      })
+    getAllPostsInformaton() {
+
+      this.showPostList = false;
+
+      // make api calls
+
+      this.getPostsByGenreId(this.genreObject.id);
+
+      setTimeout(() => {
+        this.showPostList = true;
+      }, 1000);
+
     }
 
   },
   mounted() {
+
+    if (this.$store.getters.isLoggedIn) {
+      this.userLoggedIn = true;
+    }
+
     const route = useRoute();
     const genre_id = ref(parseInt(route.params.id.split("=")[1]));
     this.genres.forEach(genre => {
@@ -145,11 +159,9 @@ export default {
         this.genreObject = genre;
       }
     });
-    this.getPostsByGenreId(genre_id.value);
-    this.getPostsUser();
-    this.getMessagesForPost();
-    this.showPostList = true;
-    console.log(this.list);
+
+
+    this.getAllPostsInformaton();
 
   },
 
@@ -167,7 +179,7 @@ export default {
     <button id="close-btn" @click="hideOverlayCreatePost">
       <img src="../components/icons/close_icon.svg" alt="close" />
     </button>
-    <CreatePostComponent />
+    <CreatePostComponent @hideCreatePostAndLoadPosts="hideCreatePostAndLoadPosts" />
   </div>
   <header>
     <BackComponent />
@@ -186,7 +198,7 @@ export default {
   <div class="posts-content" v-if="showPostList">
     <ul class="item" v-for="item in list" :key="item.id">
       <li>
-        <PostComponent :post="item" />
+        <PostComponent :post_prop="item" />
       </li>
     </ul>
   </div>
@@ -273,7 +285,6 @@ ul {
   margin-top: 3rem;
 }
 .loader-container {
-  border: 1px solid;
   display: flex;
   align-items: center;
   justify-content: center;
