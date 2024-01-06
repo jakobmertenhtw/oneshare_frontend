@@ -10,15 +10,18 @@ export default {
       post: this.post_prop,
       userInput: "",
       messageLoading: false,
-      likeLoading: false
+      likeLoading: false,
+      showMessages: false,
     };
   },
   mounted() {
     console.log(this.post);
   },
   methods: {
+    toggleMessages() {
+      this.showMessages = !this.showMessages;
+    },
     sendMessage() {
-
       if (!this.$store.getters.isLoggedIn) {
         window.alert("You need to be logged in to send a message!");
         return;
@@ -29,20 +32,20 @@ export default {
         postID: this.post.postID,
         text: this.userInput,
         datum: new Date(),
-        userFullName: this.post.user.firstName + " " + this.post.user.lastName, 
+        userFullName: this.post.user.firstName + " " + this.post.user.lastName,
         userColor: this.post.user.profileColor,
       };
 
       const baseURL = "http://localhost:8080/";
 
-      const endpoint = baseURL + 'message';
+      const endpoint = baseURL + "message";
       const requestedOptions = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(message)
-      }
+        body: JSON.stringify(message),
+      };
 
       this.messageLoading = true;
 
@@ -53,39 +56,36 @@ export default {
           console.log(data);
           this.userInput = "";
           this.messageLoading = false;
-        }).catch((error) => {
+        })
+        .catch((error) => {
           window.alert("Something went wrong! Please try again later!");
           console.log(error);
           this.messageLoading = false;
         });
-
-
-
-
     },
     likePost() {
       this.likeLoading = true;
 
       const baseURL = "http://localhost:8080/";
-      let endpoint = baseURL + 'likePost/' + this.post.postID;
+      let endpoint = baseURL + "likePost/" + this.post.postID;
 
       const requestedOptions = {
-        method: 'PUT',
-        redirect : 'follow',
-      }
+        method: "PUT",
+        redirect: "follow",
+      };
 
       fetch(endpoint, requestedOptions)
         .then((response) => response.json())
         .then((data) => {
           this.post.likes = data.likes;
           this.likeLoading = false;
-        }).catch((error) => {
+        })
+        .catch((error) => {
           window.alert("Something went wrong! Please try again later!");
           console.log(error);
           this.likeLoading = false;
         });
-
-    }
+    },
   },
   computed: {
     buttonOpacity() {
@@ -102,66 +102,101 @@ export default {
 </script>
 
 <template>
-  <div class="main-container_post">
-    <div class="post-container">
-      <div class="user-info_container">
-        <div class="user_information">
-          <div class="profile_picture">
-            <div class="profile-picture-background" :style="{backgroundColor: '#' + this.post.user.profileColor}"></div>
-            <p id="profilePictureText" :style="{color: '#' + this.post.user.profileColor}">{{ this.post.user.profilePicture }}</p>
+  <div class="main-container-post-with-messages">
+    <div class="main-container_post">
+      <div class="post-container">
+        <div class="user-info_container">
+          <div class="user_information">
+            <div class="profile_picture">
+              <div
+                class="profile-picture-background"
+                :style="{ backgroundColor: '#' + this.post.user.profileColor }"
+              ></div>
+              <p
+                id="profilePictureText"
+                :style="{ color: '#' + this.post.user.profileColor }"
+              >
+                {{ this.post.user.profilePicture }}
+              </p>
+            </div>
+            <div class="profile-info-text">
+              <h4>
+                {{ this.post.user.firstName + " " + this.post.user.lastName }}
+              </h4>
+              <p>{{ this.post.user.mail }}</p>
+            </div>
           </div>
-          <div class="profile-info-text">
-            <h4>{{ this.post.user.firstName + " " + this.post.user.lastName }}</h4>
-            <p>{{ this.post.user.mail }}</p>
+          <div class="likes-container">
+            <div class="like_button-container">
+              <button id="like-btn" @click="likePost">
+                <img
+                  src="./icons/heart_icon.svg"
+                  alt="Like Post"
+                  v-if="!likeLoading"
+                />
+                <LoadingComponent
+                  size="small"
+                  color="#fff"
+                  v-if="likeLoading"
+                />
+              </button>
+            </div>
+            <p>{{ post.likes }} likes</p>
           </div>
         </div>
-        <div class="likes-container">
-          <div class="like_button-container">
-            <button id="like-btn" @click="likePost">
-              <img src="./icons/heart_icon.svg" alt="Like Post" v-if="!likeLoading" />
-              <LoadingComponent size="small" color="#fff" v-if ="likeLoading" />
+        <div class="post-main-container">
+          <h2 id="post-heading">{{ post.titel }}</h2>
+          <p id="post-text">{{ post.text }}</p>
+          <div class="see_more-container">
+            <button id="see-more-btn" @click="toggleMessages">
+              <img src="./icons/see_more_icon.svg" alt="See More" />
             </button>
           </div>
-          <p>{{ post.likes }} likes</p>
         </div>
       </div>
-      <div class="post-main-container">
-        <h2 id="post-heading">{{ post.titel }}</h2>
-        <p id="post-text">{{ post.text }}</p>
-        <div class="see_more-container">
-          <button>
-            <img src="./icons/see_more_icon.svg" alt="See More"/>
-          </button>
+      <div class="message-container">
+        <div class="overlay-message-loading" v-if="messageLoading">
+          <LoadingComponent size="small" color="#fff" />
         </div>
+        <textarea
+          v-model="userInput"
+          name="message_{{ this.post.postID }}"
+          id="message_{{ this.post.postID }}"
+          placeholder="Write a message"
+        ></textarea>
+        <button
+          id="send_message-btn"
+          :class="{
+            'opacity-full': userInput,
+            'opacity-half': !userInput,
+            'hover-effect': userInput,
+          }"
+          @click="sendMessage"
+          :disabled="!userInput"
+        >
+          SEND MESSAGE
+        </button>
       </div>
     </div>
-    <div class="message-container">
-      <div class="overlay-message-loading" v-if="messageLoading">
-        <LoadingComponent size="small" color="#fff" />
-      </div>
-      <textarea
-        v-model="userInput"
-        name="message_{{ this.post.postID }}"
-        id="message_{{ this.post.postID }}"
-        placeholder="Write a message"
-      ></textarea>
-      <button
-        id="send_message-btn"
-        :class="{
-          'opacity-full': userInput,
-          'opacity-half': !userInput,
-          'hover-effect': userInput,
-        }"
-        @click="sendMessage"
-        :disabled="!userInput"
-      >
-        SEND MESSAGE
-      </button>
+    <div class="messages-container" :style="{maxHeight: showMessages ? '1000px' : '0' }" v-if="showMessages">
+      <h1>test messages content</h1>
     </div>
   </div>
 </template>
 
 <style scoped>
+
+.messages-container {
+  transition: max-height 5s ease-in-out;
+  border: 1px solid;
+  width: 100%;
+  max-width: 60%;
+  margin-left: 10%;
+  min-height: 10rem;
+  background-color: red;
+  overflow: hidden;
+}
+
 .main-container_post {
   width: 100%;
   display: flex;
@@ -199,7 +234,7 @@ export default {
 .profile-picture-background {
   width: 100%;
   height: 100%;
-  opacity: .4;
+  opacity: 0.4;
 }
 #profilePictureText {
   position: absolute;
@@ -207,7 +242,6 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
 
 .profile-info-text {
   display: flex;
@@ -246,16 +280,16 @@ export default {
   position: relative;
 }
 #post-heading {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-top: .5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
 }
 #post-text {
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5rem;
-    margin-top: 1rem;
-    padding-bottom: 1.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  margin-top: 1rem;
+  padding-bottom: 1.5rem;
 }
 
 .see_more-container {
@@ -266,14 +300,14 @@ export default {
   border-radius: 8px;
 }
 .see_more-container button {
-    border: none;
-    outline: none;
-    background-color: transparent;
-    width: 100%;
-    height: 100%;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
 }
 .see_more-container button:hover img {
-    opacity: 0.5 ;
+  opacity: 0.5;
 }
 
 .message-container {
