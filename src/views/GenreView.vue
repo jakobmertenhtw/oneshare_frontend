@@ -96,12 +96,15 @@ export default {
 
       fetch(endpoint, requestedOptions)
         .then((response) => response.json())
-        .then((data) => {
+        .then( async(data) => {
           if (data.length === 0) {
             window.alert("No posts found! Be the first to create one!");
           }
           this.list = data;
           this.getUserInfosForEachPost();
+
+
+
         });
     }, 
 
@@ -125,13 +128,14 @@ export default {
           .then((response) => response.json())
           .then((data) => {
             post.user = data;
+
           });
       });
 
     },
 
 
-    getAllPostsInformaton() {
+    async getAllPostsInformaton() {
 
       this.showPostList = false;
 
@@ -139,8 +143,31 @@ export default {
 
       this.getPostsByGenreId(this.genreObject.id);
 
+
+      // wait for api calls to finish
       setTimeout(() => {
         this.showPostList = true;
+
+        // hier soll jetzt die url untersucht werden, ob es einen post gibt, der angezeigt werden soll
+        const current_url = window.location.href;
+        const url_parts = current_url.split("#");
+
+        if (url_parts.length > 1) {
+          const post_id = url_parts[1];
+          const post_element = document.getElementById(post_id);
+          if (post_element) {
+            post_element.scrollIntoView();
+          } else {
+            setTimeout(() => {
+              const post_element = document.getElementById(post_id);
+              if (post_element) {
+                post_element.scrollIntoView();
+              }
+            }, 1000);
+          }
+        }
+
+
       }, 1000);
 
     }
@@ -162,6 +189,10 @@ export default {
 
 
     this.getAllPostsInformaton();
+
+
+
+
 
   },
 
@@ -197,7 +228,7 @@ export default {
   </div>
   <div class="posts-content" v-if="showPostList">
     <ul class="item" v-for="item in list" :key="item.id">
-      <li>
+      <li :id="item.postID">
         <PostComponent :post_prop="item" />
       </li>
     </ul>
