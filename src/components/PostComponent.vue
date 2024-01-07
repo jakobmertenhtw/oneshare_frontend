@@ -15,7 +15,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.post);
+    
   },
   methods: {
     toggleMessages() {

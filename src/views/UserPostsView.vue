@@ -3,101 +3,289 @@ export default {
   name: "UserPostsView",
   data() {
     return {
-      genrePosts: [
-        {
-          genreID: 1,
-          name: "Hip Hop",
-          posts: [
-            {
-              id: 1,
-              title: "Post 1",
-              description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget ultricies aliquam, nunc nisl ultricies nunc, vitae aliquam nisl nunc eu nisl. Sed vitae nisl eget nisl aliquet ultricies. Sed vitae nisl eget nisl aliquet ultricies.",
-              date: "2021-06-01",
-              genre: "Hip Hop",
-              user: {
-                id: 1,
-                firstname: "Test",
-                lastname: "User",
-                description: "Rapper and Producer",
-                profileName: "TU",
-                profileColor: '#4C83EE'
-              },
-            },
-          ],
-        },
-      ],
-      deleteModal: false, 
-      editModal: false, 
+      postsLoaded: false,
+
+      currentUser: {},
+      allPosts: [],
+      allGenres: [],
+      genres: [],
+
+      genrePosts: [],
+      deleteModal: false,
+      editModal: false,
+
       currentPostID: 0, 
+      currentPost: {},
+
     };
   },
   methods: {
-    showDeleteModal() {
+    showDeleteModal(postID) {
+      this.currentPostID = postID;
       this.deleteModal = true;
     },
-    showEditModal() {
+    showEditModal(postID) {
+      this.currentPostID = postID;
       this.editModal = true;
-    }, 
+      this.allPosts.forEach((element) => {
+        if (element.postID == postID) {
+          this.currentPost = element;
+        }
+      });
+    },
     dismissDeleteModal() {
       this.deleteModal = false;
     },
     dismissEditModal() {
       this.editModal = false;
-    }, 
+    },
     dismissAllModals() {
       this.deleteModal = false;
       this.editModal = false;
-    }, 
+    },
     deletePost() {
-      window.alert("Post deleted!");
-    }, 
+
+      const baseURL = "http://localhost:8080/";
+      let endpoint = baseURL + "deletePost/" + this.currentPostID;
+
+      let requestedOptions = {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      fetch(endpoint, requestedOptions)
+        .then(() => {
+          window.alert("Post deleted!");
+          this.getAllPosts();
+          this.dismissDeleteModal();
+        })
+        .catch((error) => {
+          window.alert("Something went wrong! Please try again later!");
+          console.log(error);
+        });
+
+
+    },
     editPost() {
-      window.alert("Post edited!");
-    }
-  }
+
+      const baseURL = "http://localhost:8080/";
+      let endpoint = baseURL + "editPost/" + this.currentPostID;
+
+      let post = {
+        postID: this.currentPostID,
+        userID: this.currentPost.userID,
+        genreID: this.currentPost.genreID,
+        titel: this.currentPost.titel,
+        text: this.currentPost.text,
+        likes: this.currentPost.likes,
+        datum: this.currentPost.datum,
+      }
+
+      let requestedOptions = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(post),
+      };
+
+      fetch(endpoint, requestedOptions)
+        .then((response) => response.json())
+        .then(() => {
+          window.alert("Post edited!");
+          this.getAllPosts();
+          this.dismissEditModal();
+        })
+        .catch((error) => {
+          window.alert("Something went wrong! Please try again later!");
+          console.log(error);
+        });
+
+    },
+
+    getAllPosts() {
+      // get all posts for one user
+      const baseURL = "http://localhost:8080/";
+      let endpoint = baseURL + "postsByUser/" + this.$store.getters.getUserId;
+
+      let requestedOptions = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      fetch(endpoint, requestedOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          this.allPosts = data;
+          this.getGenresForPostsAndCurrentUser();
+        })
+        .catch((error) => {
+          window.alert("Something went wrong! Please try again later!");
+          console.log(error);
+        });
+    },
+
+    getGenresForPostsAndCurrentUser() {
+      // get all genres
+      const baseURL = "http://localhost:8080/";
+      let endpoint = baseURL + "genres";
+
+      let requestedOptions = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      fetch(endpoint, requestedOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          this.allGenres = data;
+
+          let genres = [];
+
+          this.allPosts.forEach((element) => {
+            this.allGenres.forEach((genre) => {
+              if (element.genreID == genre.genreID && !genres.includes(genre)) {
+                genres.push(genre);
+              }
+            });
+          });
+
+          this.genres = genres;
+        })
+        .catch((error) => {
+          window.alert("Something went wrong! Please try again later!");
+          console.log(error);
+        });
+
+      // get current user
+
+      let user_endpoint = baseURL + "users/" + this.$store.getters.getUserId;
+
+      let requestedOptionsUser = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      fetch(user_endpoint, requestedOptionsUser)
+        .then((response) => response.json())
+        .then((data) => {
+          this.currentUser = data;
+
+          this.constructGenrePostsArray();
+        });
+    },
+
+    constructGenrePostsArray() {
+      let genrePosts = [];
+
+      this.genres.forEach((element) => {
+        element.posts = [];
+        this.allPosts.forEach((post) => {
+          if (post.genreID == element.genreID) {
+            element.posts.push({
+              id: post.postID,
+              title: post.titel,
+              description: post.text,
+              user: {
+                id: this.currentUser.userID,
+                firstname: this.currentUser.firstName,
+                lastname: this.currentUser.lastName,
+                description: this.currentUser.mail,
+                profileName: this.currentUser.profilePicture,
+                profileColor: this.currentUser.profileColor,
+              },
+            });
+          }
+        });
+
+        genrePosts.push({
+          genreID: element.genreID,
+          name: element.name,
+          posts: element.posts,
+        });
+      });
+
+      this.genrePosts = genrePosts;
+      this.postsLoaded = true;
+    },
+  },
+  mounted() {
+    this.getAllPosts();
+  },
 };
 </script>
 
 <template>
   <div class="my-posts-main-container">
     <h1>My Posts</h1>
-    <div v-for="(genre, index) in genrePosts" :key="index" class="genrePosts-container">
-      <h2>{{ genre.name }}</h2>
-      <div v-for="post in genre.posts" :key="post.id" class="post-container-all">
-        <div class="post-main-container">
-          <div class="post-user-information-container">
-            <div class="profile-picture-container">
-              <div class="profile-picture-background-container" :style="{backgroundColor: post.user.profileColor}"></div>
-              <div class="profile-picture-text" :style="{color: post.user.profileColor}">
-                {{ post.user.profileName }}
+    <div v-if="postsLoaded">
+      <div
+        v-for="(genre, index) in genrePosts"
+        :key="index"
+        class="genrePosts-container"
+      >
+        <h2>{{ genre.name }}</h2>
+        <div
+          v-for="post in genre.posts"
+          :key="post.id"
+          class="post-container-all"
+        >
+          <div class="post-main-container">
+            <div class="post-user-information-container">
+              <div class="profile-picture-container">
+                <div
+                  class="profile-picture-background-container"
+                  :style="{ backgroundColor: '#' + post.user.profileColor }"
+                ></div>
+                <div
+                  class="profile-picture-text"
+                  :style="{ color: '#' + post.user.profileColor }"
+                >
+                  {{ post.user.profileName }}
+                </div>
+              </div>
+              <div class="profile-information-container">
+                <h5>{{ post.user.firstname + " " + post.user.lastname }}</h5>
+                <p>{{ post.user.description }}</p>
               </div>
             </div>
-            <div class="profile-information-container">
-              <h5>{{ post.user.firstname + " " + post.user.lastname }}</h5>
-              <p>{{ post.user.description }}</p>
+            <div class="post-content-container">
+              <h3>{{ post.title }}</h3>
+              <p id="post-content-text">{{ post.description }}</p>
             </div>
           </div>
-          <div class="post-content-container">
-            <h3>{{ post.title }}</h3>
-            <p id="post-content-text">{{ post.description }}</p>
-          </div>
-        </div>
-        <div class="post-edit-container">
-          <div class="edit-post-container">
-            <button id="edit-post-btn" @click="showEditModal">
-              <img src="../components/icons/edit_icon.svg" alt="Edit Post">
-            </button>
-          </div>
-          <div class="delete-post-container">
-            <button id="delete-post-btn" @click="showDeleteModal">
-              <img src="../components/icons/delete_icon.svg" alt="Delete Post">
-            </button>
+          <div class="post-edit-container">
+            <div class="edit-post-container">
+              <button id="edit-post-btn" @click="showEditModal(post.id)">
+                <img src="../components/icons/edit_icon.svg" alt="Edit Post" />
+              </button>
+            </div>
+            <div class="delete-post-container">
+              <button id="delete-post-btn" @click="showDeleteModal(post.id)">
+                <img
+                  src="../components/icons/delete_icon.svg"
+                  alt="Delete Post"
+                />
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div id="overlay-background" v-if="deleteModal || editModal" @click="dismissAllModals"></div>
+  <div
+    id="overlay-background"
+    v-if="deleteModal || editModal"
+    @click="dismissAllModals"
+  ></div>
   <div class="overlay-container-delete" v-if="deleteModal">
     <h3>Are you sure?</h3>
     <p>Do you really want to delete the post: 'This is a test title'?</p>
@@ -108,8 +296,15 @@ export default {
   </div>
   <div class="overlay-container-edit" v-if="editModal">
     <h2>Edit Post</h2>
-    <input type="text" value="This is a test value" id="edit-post-title">
-    <textarea name="description-edit-post" id="edit-post-description" cols="30" rows="10">This is a test value textarear</textarea>
+    <input type="text" v-model="this.currentPost.titel" id="edit-post-title" />
+    <textarea
+      name="description-edit-post"
+      id="edit-post-description"
+      cols="30"
+      rows="10"
+      v-model="this.currentPost.text"
+    ></textarea
+    >
     <div class="edit-buttons-container">
       <button id="edit-btn-edit" @click="editPost">EDIT</button>
       <button id="cancel-btn-edit" @click="dismissEditModal">CANCEL</button>
@@ -122,7 +317,7 @@ export default {
   position: fixed;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,.7);
+  background-color: rgba(0, 0, 0, 0.7);
   z-index: 10;
   top: 0;
   left: 0;
@@ -130,7 +325,7 @@ export default {
 .overlay-container-delete {
   position: absolute;
   z-index: 11;
-  background-color: #F4F4F4;
+  background-color: #f4f4f4;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -140,7 +335,7 @@ export default {
 .overlay-container-delete h3 {
   font-size: 1.3rem;
   font-weight: 600;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 .overlay-container-delete p {
   font-size: 1rem;
@@ -152,7 +347,7 @@ export default {
   gap: 1rem;
 }
 .delete-buttons-container #delete-btn-delete {
-  background-color: #EE4C4C;
+  background-color: #ee4c4c;
 }
 .delete-buttons-container #cancel-btn-delete {
   background-color: #222;
@@ -166,7 +361,7 @@ export default {
 .overlay-container-edit {
   position: absolute;
   z-index: 11;
-  background-color: #F4F4F4;
+  background-color: #f4f4f4;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -217,16 +412,13 @@ export default {
   outline: none;
 }
 .edit-buttons-container #edit-btn-edit {
-  background-color: #4C83EE;
+  background-color: #4c83ee;
   color: #fff;
 }
 .edit-buttons-container #cancel-btn-edit {
   background-color: #222;
   color: #fff;
 }
-
-
-
 
 .my-posts-main-container {
   padding: 7rem 4rem;
@@ -253,9 +445,10 @@ export default {
   flex: 1;
   padding: 2rem;
   display: flex;
+  margin-bottom: 1.3rem;
 }
 .post-user-information-container {
-  border-right: 1px solid #E5E5E5;
+  border-right: 1px solid #e5e5e5;
   padding-right: 1rem;
   display: flex;
   min-width: 13rem;
@@ -274,7 +467,7 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  opacity: .2;
+  opacity: 0.2;
 }
 .profile-information-container {
   max-width: 8rem;
@@ -288,10 +481,10 @@ export default {
 .profile-information-container h5 {
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: .2rem;
+  margin-bottom: 0.2rem;
 }
 .profile-information-container p {
-  font-size: .7rem;
+  font-size: 0.7rem;
   font-weight: 400;
 }
 .post-content-container {
@@ -300,16 +493,14 @@ export default {
 .post-content-container h3 {
   font-size: 1.3rem;
   font-weight: 600;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
   margin-bottom: 1rem;
 }
 .post-content-container p {
-  font-size: .9rem;
+  font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.5rem;
 }
-
-
 
 .post-edit-container button {
   padding: 13px 15px;
@@ -318,9 +509,9 @@ export default {
   outline: none;
 }
 #edit-post-btn {
-  background-color: #4C83EE;
+  background-color: #4c83ee;
 }
 #delete-post-btn {
-  background-color: #EE4C4C;
+  background-color: #ee4c4c;
 }
 </style>

@@ -15,7 +15,7 @@ export default {
           id: 2,
           name: "Klassik",
           imagepath: "./images/klassik.png",
-          imagealt: "Rock Genre",
+          imagealt: "Klassik Genre",
         },
         {
           id: 3,

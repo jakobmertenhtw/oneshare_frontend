@@ -4,10 +4,10 @@ import { useStore } from "vuex";
 export default {
   name: "UserMenu",
   setup() {
-    const username = ref("Lil Uzi");
-    const user_description = ref("Rapper and Producer");
-
-    const data = ref(null);
+    const username = ref("");
+    const user_description = ref("");
+    const profile_picture = ref("");
+    const profile_color = ref("");
 
     const store = useStore();
 
@@ -15,66 +15,37 @@ export default {
       store.dispatch("logout");
     };
 
-    /*const testAjax = async () => {
-
-            let userID = parseInt(document.getElementById('userid_field').value);
-            if (isNaN(userID) && userID >= 1 && userID <= 100) {
-                userID = 1;
-                console.log('USERID failed and default is 1');
-            }
-
-            
-            const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
-
-            const endpoint = baseURL + 'users/' + userID;
-
-
-            const requestedOptions = {
-                method: 'GET',
-                redirect : 'follow',
-            }
-
-            fetch(endpoint, requestedOptions)
-                .then(response => response.json())
-                .then(result => data.value = result);
-        }
-
-        const testAjaxPost = async () => {
-            console.log('test ajax post');
-            const endpoint = 'http://localhost:8080/users';
-
-            const test_data = {
-                username: 'test',
-                firstName: 'test', 
-                lastName: 'test',
-                mail: 'test@mail.com', 
-                phoneNumber: 39230492,
-            }
-
-            const requestedOptions = {
-                method: 'POST', 
-                headers: {
-                    'Content-Type': 'application/json'
-                }, 
-                body: JSON.stringify(test_data)
-            }
-            fetch(endpoint, requestedOptions)
-                .then(response => response.json())
-                .then(result => {
-                    console.log(result)
-                })
-                .catch(error => {
-                    console.log('error: ' + error)
-                });
-        }
-        */
-
     return {
       username,
       user_description,
-      data,
+      profile_picture, 
+      profile_color,
       signout,
     };
+  },
+  mounted() {
+    const user_id = this.$store.getters.getUserId;
+
+    const baseURL = "http://localhost:8080/";
+    let endpoint = baseURL + "users/" + user_id;
+    let requestedOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    fetch(endpoint, requestedOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        this.username = data.firstName + " " + data.lastName;
+        this.user_description = data.mail;
+        this.profile_picture = data.profilePicture;
+        this.profile_color = data.profileColor;
+      })
+      .catch((error) => {
+        window.alert("Something went wrong! Please try again later!");
+        console.log(error);
+      });
   },
 };
 </script>
@@ -82,7 +53,10 @@ export default {
 <template>
   <div class="user-menu-container">
     <div class="profile-info-con">
-      <img src="./images/example_profilepicture.png" alt="Profile Picture" />
+      <div class="profile_picture-cotainer">
+        <div class="profile_picture-background" :style="{backgroundColor: '#' + profile_color}"></div>
+        <p id="profile_picture-text" :style="{color: '#' + profile_color}">{{ profile_picture }}</p>
+      </div>
       <h3 id="username">{{ username }}</h3>
       <p id="user_description">{{ user_description }}</p>
     </div>
@@ -110,7 +84,6 @@ export default {
     </div>
     <button id="logout_btn" @click="signout">Logout</button>
   </div>
-  <p>{{ this.data }}</p>
 </template>
 
 <style scoped>
@@ -132,6 +105,34 @@ export default {
   text-align: center;
   padding-top: 6rem;
 }
+
+.profile_picture-cotainer {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  margin: auto;
+  margin-bottom: 2rem;
+  position: relative;
+}
+.profile_picture-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.2;
+  border-radius: 10px;
+}
+#profile_picture-text {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 h3 {
   font-size: 1.2rem;
   margin-bottom: 10px;

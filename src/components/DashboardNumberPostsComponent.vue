@@ -2,8 +2,8 @@
 export default {
     data() {
         return {
-            numberOfPostsToday: 233, 
-            numberOfPostsThisWeek: 2333, 
+            numberOfPostsToday: 0, 
+            numberOfPostsThisWeek: 0, 
             currentModeDay: true, 
         }
     }, 
@@ -14,6 +14,27 @@ export default {
         changeToWeek() {
             this.currentModeDay = false;
         }
+    }, 
+    mounted() {
+        const baseURL = "http://localhost:8080/";
+        let endpoint = baseURL + "numberOfPosts";
+        let requestedOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        fetch(endpoint, requestedOptions)
+            .then((response) => response.json())
+            .then((data) => {
+                this.numberOfPostsToday = data[0];
+                this.numberOfPostsThisWeek = data[1];
+            })
+            .catch((error) => {
+                window.alert("Something went wrong! Please try again later!");
+                console.log(error);
+            });
+
     }
 }
 </script>
