@@ -2,6 +2,7 @@
 import GenreComponent from '../components/GenreComponent.vue';
 import MainHeader from '../components/MainHeader.vue';
 import MainModal from '../components/MainModal.vue';
+import LoadingComponent from '../components/LoadingComponent.vue';
 import { ref } from 'vue';
 
 export default {
@@ -9,61 +10,13 @@ export default {
   components: {
     GenreComponent,
     MainHeader,
-    MainModal
+    MainModal, 
+    LoadingComponent
   }, 
   data() {
     return {
-      // Schreibe mir eine Liste für genres mit 12 elemente, alle haben eine id, name, imagepath und imagealt
-      genres: [
-        {
-          id: 1,
-          name: 'Jazz',
-          imagepath: './images/jazz.png',
-          imagealt: 'Jazz Genre'
-        },
-        {
-          id: 2,
-          name: 'Klassik',
-          imagepath: './images/klassik.png',
-          imagealt: 'Rock Genre'
-        },
-        {
-          id: 3,
-          name: 'Hip Hop',
-          imagepath: './images/hiphop.png',
-          imagealt: 'Hip Hop Genre'
-        },
-        {
-          id: 4,
-          name: 'Pop',
-          imagepath: './images/pop.png',
-          imagealt: 'Pop Genre'
-        },
-        {
-          id: 5,
-          name: 'EDM',
-          imagepath: './images/edm.png',
-          imagealt: 'EDM Genre'
-        },
-        {
-          id: 6,
-          name: 'Heavy Metal',
-          imagepath: './images/heavymetal.png',
-          imagealt: 'Heavy Metal Genre'
-        },
-        {
-          id: 7,
-          name: 'Rock',
-          imagepath: './images/rock.png',
-          imagealt: 'Rock Genre'
-        },
-        {
-          id: 8,
-          name: 'Funk',
-          imagepath: './images/funk.png',
-          imagealt: 'Funk Genre'
-        }
-      ]
+      showGenres: false, 
+      genres: []
     }
   },
   setup() {
@@ -85,6 +38,28 @@ export default {
       toggleModal, 
       makeSignIn, makeSignUp, isSignUp
     }
+  }, 
+  mounted() {
+    // get genres from backend
+    const baseURL = 'http://localhost:8080/';
+    const endpoint = baseURL + 'genres';
+    const requestedOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+
+    fetch(endpoint, requestedOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        this.genres = data;
+        this.showGenres = true;
+      })
+      .catch(error => console.log('error', error));
+
   }
 }
 
@@ -93,8 +68,8 @@ export default {
 <template>
   <MainModal @closeModal="toggleModal" :isSignUp=isSignUp :modalActive=modalActive @update:isSignUp="value => isSignUp = value">
   </MainModal>
-  <MainHeader @openModal_SIGNIN="makeSignIn" @openModal_SIGNUP="makeSignUp" />
-  <div class="content_container">
+  <MainHeader @openModal_SIGNIN="makeSignIn" @openModal_SIGNUP="makeSignUp" v-if="showGenres" />
+  <div class="content_container" v-if="showGenres">
     <div class="headline-container">
       <h1>Choose your genre</h1>
       <h2>Select a genre, you are interested in. You can then see posts other people interested in Music posted. You can
@@ -108,9 +83,18 @@ export default {
     </ul>
     </div>
   </div>
+  <div class="loading-container" v-if="!showGenres">
+    <LoadingComponent size="large" color="black" />
+  </div>
 </template>
 
 <style scoped>
+.loading-container {
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 h1 {
   font-family: 'Montserrat', sans-serif;
   font-size: 3rem;
