@@ -94,7 +94,6 @@ export default {
     fetch(endpoint, requestedOptions)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         this.user = data;
         this.userFirstName = data.firstName;
         this.userLastName = data.lastName;

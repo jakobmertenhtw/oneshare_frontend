@@ -1,4 +1,5 @@
 <script>
+import LoadingComponent from "../components/LoadingComponent.vue";
 export default {
   name: "UserPostsView",
   data() {
@@ -105,10 +106,11 @@ export default {
 
     },
 
-    getAllPosts() {
+    async getAllPosts() {
       // get all posts for one user
       const baseURL = "http://localhost:8080/";
-      let endpoint = baseURL + "postsByUser/" + this.$store.getters.getUserId;
+      const user_id = this.$store.getters.getUserId;
+      let endpoint = baseURL + "postsByUser/" + user_id;
 
       let requestedOptions = {
         method: "GET",
@@ -117,19 +119,21 @@ export default {
         },
       };
 
-      fetch(endpoint, requestedOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          this.allPosts = data;
-          this.getGenresForPostsAndCurrentUser();
-        })
-        .catch((error) => {
-          window.alert("Something went wrong! Please try again later!");
-          console.log(error);
-        });
+      try {
+        const response = await fetch(endpoint, requestedOptions);
+        const data = await response.json();
+        this.allPosts = data;
+        this.getGenresForPostsAndCurrentUser();
+      } catch (error) {
+        window.alert("Something went wrong! Please try again later!");
+        console.log(error);
+        return;
+      }
+
     },
 
-    getGenresForPostsAndCurrentUser() {
+    async getGenresForPostsAndCurrentUser() {
+
       // get all genres
       const baseURL = "http://localhost:8080/";
       let endpoint = baseURL + "genres";
@@ -141,46 +145,44 @@ export default {
         },
       };
 
-      fetch(endpoint, requestedOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          this.allGenres = data;
+      try {
+        const response = await fetch(endpoint, requestedOptions);
+        const data = await response.json();
+        this.allGenres = data;
 
-          let genres = [];
+        let genres = [];
 
-          this.allPosts.forEach((element) => {
-            this.allGenres.forEach((genre) => {
-              if (element.genreID == genre.genreID && !genres.includes(genre)) {
-                genres.push(genre);
-              }
-            });
+        this.allPosts.forEach((element) => {
+          this.allGenres.forEach((genre) => {
+            if (element.genreID == genre.genreID && !genres.includes(genre)) {
+              genres.push(genre);
+            }
           });
-
-          this.genres = genres;
-        })
-        .catch((error) => {
-          window.alert("Something went wrong! Please try again later!");
-          console.log(error);
         });
+        this.genres = genres;
 
-      // get current user
+        // get current user
+        let user_endpoint = baseURL + "users/" + this.$store.getters.getUserId;
 
-      let user_endpoint = baseURL + "users/" + this.$store.getters.getUserId;
+        let requestedOptionsUser = {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
 
-      let requestedOptionsUser = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
+        const userResponse = await fetch(user_endpoint, requestedOptionsUser);
+        const userData = await userResponse.json();
 
-      fetch(user_endpoint, requestedOptionsUser)
-        .then((response) => response.json())
-        .then((data) => {
-          this.currentUser = data;
+        this.currentUser = userData;
 
-          this.constructGenrePostsArray();
-        });
+      } catch (error) {
+        window.alert("Something went wrong! Please try again later!");
+        console.log(error);
+        return;
+      }
+
+      this.constructGenrePostsArray();
     },
 
     constructGenrePostsArray() {
@@ -220,12 +222,18 @@ export default {
   mounted() {
     this.getAllPosts();
   },
+  components: {
+    LoadingComponent,
+  },
 };
 </script>
 
 <template>
   <div class="my-posts-main-container">
     <h1>My Posts</h1>
+    <div v-if="!postsLoaded" class="loading-animation-container">
+      <LoadingComponent size="large" color="black" />
+    </div>
     <div v-if="postsLoaded">
       <div
         v-for="(genre, index) in genrePosts"
@@ -422,6 +430,12 @@ export default {
 
 .my-posts-main-container {
   padding: 7rem 4rem;
+}
+.loading-animation-container {
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .genrePosts-container {
   margin-top: 2.5rem;
