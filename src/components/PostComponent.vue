@@ -1,5 +1,6 @@
 <script>
 import LoadingComponent from "./LoadingComponent.vue";
+import MessageComponent from "./MessageComponent.vue";
 export default {
   name: "PostComponent",
   props: {
@@ -12,14 +13,38 @@ export default {
       messageLoading: false,
       likeLoading: false,
       showMessages: false,
+      zeroMessages: false, 
+      getMessagesLoading: false,
+      messages: [],
     };
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
-    toggleMessages() {
+    async toggleMessages() {
       this.showMessages = !this.showMessages;
+      if (this.showMessages == true) {
+        this.getMessagesLoading = true;
+        await this.loadMessages();
+        this.getMessagesLoading = false;
+      }
+    },
+    async loadMessages() {
+      const baserURL = "http://localhost:8080/";
+      let endpoint = baserURL + "messages/" + this.post.postID;
+
+      try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        this.messages = data;
+        if (this.messages.length == 0) {
+          this.zeroMessages = true;
+        } else {
+          this.zeroMessages = false;
+        }
+      } catch (error) {
+        window.alert("Something went wrong! Please try again later!");
+        console.log(error);
+      }
     },
     sendMessage() {
       if (!this.$store.getters.isLoggedIn) {
@@ -97,6 +122,7 @@ export default {
   },
   components: {
     LoadingComponent,
+    MessageComponent,
   },
 };
 </script>
@@ -149,7 +175,11 @@ export default {
           <p id="post-text">{{ post.text }}</p>
           <div class="see_more-container">
             <button id="see-more-btn" @click="toggleMessages">
-              <img src="./icons/see_more_icon.svg" alt="See More" />
+              <img
+                src="./icons/see_more_icon.svg"
+                alt="See More"
+                :style="{ transform: showMessages ? 'rotate(90deg)' : 'none' }"
+              />
             </button>
           </div>
         </div>
@@ -178,23 +208,42 @@ export default {
         </button>
       </div>
     </div>
-    <div class="messages-container" :style="{maxHeight: showMessages ? '1000px' : '0' }" v-if="showMessages">
-      <h1>test messages content</h1>
+    <div class="messages-container" v-if="showMessages">
+      <div class="zero_messages-container" v-if="zeroMessages">
+        <p id="zero-messages-message">This post currently has no related messages</p>
+      </div>
+      <div class="messages-list-container" v-if="!getMessagesLoading">
+        <ul class="item" v-for="item in messages" :key="item.id">
+          <li>
+            <MessageComponent :message_prop="item" />
+          </li>
+        </ul>
+      </div>
+      <div class="messages-loading-container" v-if="getMessagesLoading">
+        <LoadingComponent size="small" color="#000" />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-
 .messages-container {
   transition: max-height 5s ease-in-out;
-  border: 1px solid;
   width: 100%;
   max-width: 60%;
   margin-left: 10%;
-  min-height: 10rem;
-  background-color: red;
   overflow: hidden;
+}
+.zero_messages-container {
+  display: flex;
+  justify-content: center;
+}
+#zero-messages-message {
+  font-size: .9rem;
+}
+.messages-loading-container {
+  display: flex;
+  justify-content: center;
 }
 
 .main-container_post {
