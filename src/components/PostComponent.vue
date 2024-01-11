@@ -13,7 +13,7 @@ export default {
       messageLoading: false,
       likeLoading: false,
       showMessages: false,
-      zeroMessages: false, 
+      zeroMessages: false,
       getMessagesLoading: false,
       messages: [],
     };
@@ -46,47 +46,60 @@ export default {
         console.log(error);
       }
     },
-    sendMessage() {
+    async sendMessage() {
+      // get current logged in user information
       if (!this.$store.getters.isLoggedIn) {
         window.alert("You need to be logged in to send a message!");
         return;
       }
 
-      let message = {
-        userID: this.post.userID,
-        postID: this.post.postID,
-        text: this.userInput,
-        datum: new Date(),
-        userFullName: this.post.user.firstName + " " + this.post.user.lastName,
-        userColor: this.post.user.profileColor,
-      };
-
-      const baseURL = "http://localhost:8080/";
-
-      const endpoint = baseURL + "message";
-      const requestedOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      };
-
       this.messageLoading = true;
 
-      fetch(endpoint, requestedOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          window.alert("Message sent successully!");
-          console.log(data);
-          this.userInput = "";
-          this.messageLoading = false;
-        })
-        .catch((error) => {
-          window.alert("Something went wrong! Please try again later!");
-          console.log(error);
-          this.messageLoading = false;
-        });
+      const current_userId = this.$store.getters.getUserId;
+
+      // get current user information
+      const baseURL = "http://localhost:8080/";
+
+      const user_endpoint = baseURL + "users/" + current_userId;
+
+      const user_requestedOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+
+      try {
+        const user_response = await fetch(user_endpoint, user_requestedOptions);
+        const user_data = await user_response.json();
+
+        let message = {
+          userID: user_data.userID,
+          postID: this.post.postID,
+          text: this.userInput,
+          datum: new Date(),
+          userFullName: user_data.firstName + " " + user_data.lastName,
+          userColor: user_data.profileColor,
+        };
+
+        const endpoint = baseURL + "message";
+        const requestedOptions = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(message),
+        };
+        
+        await fetch(endpoint, requestedOptions);
+
+      } catch (error) {
+        window.alert("Something went wrong! Please try again later!");
+        console.log(error);
+        this.messageLoading = false;
+      }
+
+      this.messageLoading = false;
+      this.userInput = "";
+
     },
     likePost() {
       this.likeLoading = true;
@@ -210,7 +223,9 @@ export default {
     </div>
     <div class="messages-container" v-if="showMessages">
       <div class="zero_messages-container" v-if="zeroMessages">
-        <p id="zero-messages-message">This post currently has no related messages</p>
+        <p id="zero-messages-message">
+          This post currently has no related messages
+        </p>
       </div>
       <div class="messages-list-container" v-if="!getMessagesLoading">
         <ul class="item" v-for="item in messages" :key="item.id">
@@ -239,7 +254,7 @@ export default {
   justify-content: center;
 }
 #zero-messages-message {
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
 .messages-loading-container {
   display: flex;
