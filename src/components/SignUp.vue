@@ -28,7 +28,11 @@ export default {
 
         isLoading.value = true;
 
-        let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+        //let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+
+        const randomColors = ['DC4A4A', 'D15824', 'B8E20E', '0CD1EC', 'D607DA', '266F98', 'A41414', '8500A7', '007D2B', '00DE4B', 'A5A800', '945050', '13219C', '59A979', 'B05050', '9A4783', '466D6D', '4E7E4A'];
+        let randomColor = randomColors[Math.floor(Math.random() * randomColors.length)];
+
         let profilePictureName = firstname.value.charAt(0).toUpperCase() + lastname.value.charAt(0).toUpperCase();
 
         let user = {

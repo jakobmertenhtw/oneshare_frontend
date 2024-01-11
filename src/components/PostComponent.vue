@@ -75,7 +75,6 @@ export default {
           userID: user_data.userID,
           postID: this.post.postID,
           text: this.userInput,
-          datum: new Date(),
           userFullName: user_data.firstName + " " + user_data.lastName,
           userColor: user_data.profileColor,
         };

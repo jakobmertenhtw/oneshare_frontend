@@ -123,6 +123,7 @@ export default {
         const response = await fetch(endpoint, requestedOptions);
         const data = await response.json();
         this.allPosts = data;
+
         this.getGenresForPostsAndCurrentUser();
       } catch (error) {
         window.alert("Something went wrong! Please try again later!");
@@ -152,9 +153,10 @@ export default {
 
         let genres = [];
 
+
         this.allPosts.forEach((element) => {
           this.allGenres.forEach((genre) => {
-            if (element.genreID == genre.genreID && !genres.includes(genre)) {
+            if (element.genreID == genre.id && !genres.includes(genre)) {
               genres.push(genre);
             }
           });
@@ -186,12 +188,17 @@ export default {
     },
 
     constructGenrePostsArray() {
+
+      console.log(this.allPosts);
+      console.log(this.genres);
+      console.log(this.currentUser);
+
       let genrePosts = [];
 
       this.genres.forEach((element) => {
         element.posts = [];
         this.allPosts.forEach((post) => {
-          if (post.genreID == element.genreID) {
+          if (post.genreID == element.id) {
             element.posts.push({
               id: post.postID,
               title: post.titel,

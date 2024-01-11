@@ -48,7 +48,6 @@ export default {
         titel: this.title,
         text: this.description,
         likes: 0,
-        datum: new Date(),
       };
 
       const endpoint = 'http://localhost:8080/post';
