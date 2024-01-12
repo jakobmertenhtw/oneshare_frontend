@@ -110,7 +110,6 @@ describe("PostComponent", () => {
 
     expect(like_number.text()).toContain(like_post.likes);
 
-
-
+    fetchMock.default.restore();
   });
 });

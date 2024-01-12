@@ -64,8 +64,9 @@ describe('MessageComponent', () => {
             props: { post_prop: post }
         });
 
-        await wrapper.find('#see-more-btn').trigger('click');
         fetchMock.default.mock('*', { body: JSON.stringify([]) });
+
+        await wrapper.find('#see-more-btn').trigger('click');
         await flushPromises();
 
         await new Promise(resolve => setTimeout(resolve, 1000));
