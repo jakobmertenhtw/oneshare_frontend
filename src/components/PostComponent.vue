@@ -32,7 +32,10 @@ export default {
       let endpoint = baserURL + "messages/" + this.post.postID;
 
       try {
-        const response = await fetch(endpoint);
+        const response = await fetch(endpoint, {
+          method: "GET",
+          redirect: "follow",
+        });
         const data = await response.json();
         this.messages = data;
         if (this.messages.length == 0) {

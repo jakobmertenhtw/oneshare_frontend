@@ -17,7 +17,6 @@ export default {
         this.message = this.message_prop;
         this.userProfilePicture = this.getInitials(this.message.userFullName);
         this.showMessages = true;
-        console.log(this.message);
     },
     methods: {
         getInitials(fullName) {
