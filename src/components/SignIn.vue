@@ -33,7 +33,7 @@ export default {
       }
 
 
-      fetch(endpoint + '/' + email.value, requestedOptions)
+      fetch(endpoint + '/' + email.value + '/' + password.value, requestedOptions)
         .then(response => response.json())
         .then(result => {
           if (result.status === 500) {
