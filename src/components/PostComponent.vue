@@ -116,6 +116,7 @@ export default {
       fetch(endpoint, requestedOptions)
         .then((response) => response.json())
         .then((data) => {
+          console.log(data);
           this.post.likes = data.likes;
           this.likeLoading = false;
         })
@@ -181,7 +182,7 @@ export default {
                 />
               </button>
             </div>
-            <p>{{ post.likes }} likes</p>
+            <p id="number_likes">{{ post.likes }} likes</p>
           </div>
         </div>
         <div class="post-main-container">

@@ -41,11 +41,6 @@ export default {
             isLoading.value = false;
             return;
           }
-          if (result.password !== password.value) {
-            window.alert('Wrong password!');
-            isLoading.value = false;
-            return;
-          }
           isLoading.value = false;
           store.dispatch('login', result.userID);
         })

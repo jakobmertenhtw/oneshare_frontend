@@ -37,6 +37,7 @@ export default {
     fetch(endpoint, requestedOptions)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         this.username = data.firstName + " " + data.lastName;
         this.user_description = data.mail;
         this.profile_picture = data.profilePicture;
