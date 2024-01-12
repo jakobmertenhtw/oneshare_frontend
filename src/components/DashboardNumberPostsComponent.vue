@@ -27,6 +27,7 @@ export default {
         fetch(endpoint, requestedOptions)
             .then((response) => response.json())
             .then((data) => {
+                console.log(data);
                 this.numberOfPostsToday = data[0];
                 this.numberOfPostsThisWeek = data[1];
             })

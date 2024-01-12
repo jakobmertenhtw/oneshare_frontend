@@ -132,8 +132,9 @@ export default {
       this.showPostList = false;
 
       // make api calls
-
-      this.getPostsByGenreId(this.genreObject.id);
+      if (this.genreObject) {
+        this.getPostsByGenreId(this.genreObject.id);
+      }
 
       // wait for api calls to finish
       setTimeout(() => {
@@ -168,12 +169,14 @@ export default {
     }
 
     const route = useRoute();
-    const genre_id = ref(parseInt(route.params.id.split("=")[1]));
-    this.genres.forEach((genre) => {
-      if (genre.id == genre_id.value) {
-        this.genreObject = genre;
-      }
-    });
+    if (route.params.id) {
+      const genre_id = ref(parseInt(route.params.id.split("=")[1]));
+      this.genres.forEach((genre) => {
+        if (genre.id == genre_id.value) {
+          this.genreObject = genre;
+        }
+      });
+    }
 
     this.getAllPostsInformaton();
   },

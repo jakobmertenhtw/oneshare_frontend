@@ -189,10 +189,6 @@ export default {
 
     constructGenrePostsArray() {
 
-      console.log(this.allPosts);
-      console.log(this.genres);
-      console.log(this.currentUser);
-
       let genrePosts = [];
 
       this.genres.forEach((element) => {

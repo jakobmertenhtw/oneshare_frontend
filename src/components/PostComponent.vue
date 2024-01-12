@@ -18,9 +18,6 @@ export default {
       messages: [],
     };
   },
-  mounted() {
-    console.log(this.post);
-  },
   methods: {
     async toggleMessages() {
       this.showMessages = !this.showMessages;
