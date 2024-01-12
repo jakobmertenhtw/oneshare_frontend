@@ -66,6 +66,7 @@ export default {
   width: 100%;
   height: 100%;
   padding: 3rem 2rem;
+  padding-bottom: 1rem;
 }
 h2 {
   margin-bottom: 2rem;
@@ -79,5 +80,6 @@ h2 {
   max-width: 100%;
   overflow-x: scroll;
   gap: 1rem;
+  padding-bottom: 2rem;
 }
 </style>

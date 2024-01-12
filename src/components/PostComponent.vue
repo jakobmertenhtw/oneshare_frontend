@@ -100,9 +100,32 @@ export default {
 
       this.messageLoading = false;
       this.userInput = "";
+      
+      if (this.showMessages == true) {
+        this.getMessagesLoading = true;
+        await this.loadMessages();
+        this.getMessagesLoading = false;
+      } else {
+        this.showMessages = true;
+        this.getMessagesLoading = true;
+        await this.loadMessages();
+        this.getMessagesLoading = false;
+      }
+
 
     },
     likePost() {
+
+      if (!this.$store.getters.isLoggedIn) {
+        window.alert("You need to be logged in to like a post!");
+        return;
+      }
+
+      if (sessionStorage.getItem("likedPost_" + this.post.postID)) {
+        window.alert("You already liked this post!");
+        return;
+      }
+
       this.likeLoading = true;
 
       const baseURL = "http://localhost:8080/";
@@ -116,9 +139,11 @@ export default {
       fetch(endpoint, requestedOptions)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
           this.post.likes = data.likes;
           this.likeLoading = false;
+
+          sessionStorage.setItem("likedPost_" + this.post.postID, true);
+
         })
         .catch((error) => {
           window.alert("Something went wrong! Please try again later!");
