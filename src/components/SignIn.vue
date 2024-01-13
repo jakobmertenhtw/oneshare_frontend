@@ -25,7 +25,8 @@ export default {
 
       isLoading.value = true;
 
-      const endpoint = 'http://localhost:8080/users/mail';
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
+      const endpoint = baseURL + 'users/mail';
 
       const requestedOptions = {
         method: 'GET', 

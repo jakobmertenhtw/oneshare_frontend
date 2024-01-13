@@ -1,5 +1,5 @@
 <script>
-import { ref, watchEffect } from 'vue';
+import { ref } from 'vue';
 
 export default {
   name: "PostComponent",
@@ -8,12 +8,9 @@ export default {
   },
   setup(props) {
 
-   const logo = ref(null);
-
-   watchEffect(async () => {
-      logo.value = (await import(/* @vite-ignore */ `${props.genre.imagepath}`)).default
-   })
+   const logo = ref(props.genre.imagepath);
    return { logo };
+
   }, 
 
   data() {
