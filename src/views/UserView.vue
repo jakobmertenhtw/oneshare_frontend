@@ -77,7 +77,7 @@ export default {
   .hamburger-icons {
     z-index: 5;
     display: flex;
-    position: absolute;
+    position: fixed;
     background-color: black;
     top: 1.5rem;
     right: 1.5rem;
