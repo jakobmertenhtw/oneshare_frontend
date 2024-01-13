@@ -16,7 +16,7 @@ export default {
         }
     }, 
     mounted() {
-        const baseURL = "http://localhost:8080/";
+        const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
         let endpoint = baseURL + "numberOfPosts";
         let requestedOptions = {
             method: "GET",

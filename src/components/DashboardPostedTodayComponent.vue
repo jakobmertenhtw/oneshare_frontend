@@ -10,7 +10,7 @@ export default {
   methods: {
     getPostsFromToday() {
       // get posts from today
-      const baseURL = "http://localhost:8080/";
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
       let endpoint = baseURL + "postsFromToday";
 
       let requestedOptions = {
@@ -42,7 +42,7 @@ export default {
     },
     getUserDataPerPost() {
       this.posts.forEach((post) => {
-        const baseURL = "http://localhost:8080/";
+        const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
         let endpoint = baseURL + "users/" + post.userID;
 
         let requestedOptions = {

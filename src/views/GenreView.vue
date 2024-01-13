@@ -85,7 +85,7 @@ export default {
 
     // MAKE API CALLS AND WRITE DATA TO LIST
     getPostsByGenreId(genreID) {
-      const baseURL = "http://localhost:8080";
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
       const endpoint = baseURL + "/postsByGenre/" + genreID;
 
       const requestedOptions = {
@@ -110,7 +110,7 @@ export default {
     },
 
     getUserInfosForEachPost() {
-      const baseURL = "http://localhost:8080";
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
 
       this.list.forEach((post) => {
         let endpoint = baseURL + "/users/" + post.userID;

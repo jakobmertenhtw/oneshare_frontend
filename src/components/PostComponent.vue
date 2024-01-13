@@ -28,8 +28,8 @@ export default {
       }
     },
     async loadMessages() {
-      const baserURL = "http://localhost:8080/";
-      let endpoint = baserURL + "messages/" + this.post.postID;
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
+      let endpoint = baseURL + "messages/" + this.post.postID;
 
       try {
         const response = await fetch(endpoint, {
@@ -60,7 +60,7 @@ export default {
       const current_userId = this.$store.getters.getUserId;
 
       // get current user information
-      const baseURL = "http://localhost:8080/";
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
 
       const user_endpoint = baseURL + "users/" + current_userId;
 
@@ -128,7 +128,7 @@ export default {
 
       this.likeLoading = true;
 
-      const baseURL = "http://localhost:8080/";
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
       let endpoint = baseURL + "likePost/" + this.post.postID;
 
       const requestedOptions = {

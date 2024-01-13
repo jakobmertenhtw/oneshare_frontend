@@ -50,7 +50,7 @@ export default {
       this.editModal = false;
     },
     deletePost() {
-      const baseURL = "http://localhost:8080/";
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
       let endpoint = baseURL + "deletePost/" + this.currentPostID;
 
       let requestedOptions = {
@@ -72,7 +72,7 @@ export default {
         });
     },
     editPost() {
-      const baseURL = "http://localhost:8080/";
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
       let endpoint = baseURL + "editPost/" + this.currentPostID;
 
       let post = {
@@ -108,7 +108,7 @@ export default {
 
     async getAllPosts() {
       // get all posts for one user
-      const baseURL = "http://localhost:8080/";
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
       const user_id = this.$store.getters.getUserId;
       let endpoint = baseURL + "postsByUser/" + user_id;
 
@@ -134,7 +134,7 @@ export default {
 
     async getGenresForPostsAndCurrentUser() {
       // get all genres
-      const baseURL = "http://localhost:8080/";
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
       let endpoint = baseURL + "genres";
 
       let requestedOptions = {

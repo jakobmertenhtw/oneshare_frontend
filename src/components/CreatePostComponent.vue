@@ -50,7 +50,9 @@ export default {
         likes: 0,
       };
 
-      const endpoint = 'http://localhost:8080/post';
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
+
+      const endpoint = baseURL + 'post';
       const requestedOptions = {
         method: 'POST',
         headers: {

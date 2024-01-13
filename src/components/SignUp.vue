@@ -45,7 +45,9 @@ export default {
             password: password.value,
         };
 
-        const endpoint = 'http://localhost:8080/users';
+        const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
+
+        const endpoint = baseURL + 'users';
 
         const requestedOptions = {
             method: 'POST', 

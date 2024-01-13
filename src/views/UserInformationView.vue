@@ -32,7 +32,7 @@ export default {
 
       this.isLoading = true;
 
-      const baseURL = "http://localhost:8080/";
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
       const endpoint = baseURL + "users/" + this.userID;
 
       let user = {
@@ -82,7 +82,7 @@ export default {
       return;
     }
     // get user profile information from logged in user
-    const baseURL = "http://localhost:8080/";
+    const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
     const endpoint = baseURL + "users/" + this.userID;
 
     const requestedOptions = {

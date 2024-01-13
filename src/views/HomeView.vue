@@ -41,7 +41,7 @@ export default {
   }, 
   mounted() {
     // get genres from backend
-    const baseURL = 'http://localhost:8080/';
+    const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
     const endpoint = baseURL + 'genres';
     const requestedOptions = {
       method: 'GET',

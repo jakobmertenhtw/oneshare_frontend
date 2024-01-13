@@ -26,7 +26,7 @@ export default {
   mounted() {
     const user_id = this.$store.getters.getUserId;
 
-    const baseURL = "http://localhost:8080/";
+    const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
     let endpoint = baseURL + "users/" + user_id;
     let requestedOptions = {
       method: "GET",
