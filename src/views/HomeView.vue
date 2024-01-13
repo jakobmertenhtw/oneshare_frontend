@@ -119,8 +119,36 @@ h2 {
   grid-row-gap: 3rem;
   list-style-type: none;
   padding: 0;
+  overflow-x: scroll;
 }
 ul li {
   display: inline-block;
 }
+
+@media (max-width: 1300px) {
+  .genre-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 1000px) {
+  .genre-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .genre-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .genre-container ul li {
+    width: 100%;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1rem;
+  } 
+}
+
 </style>

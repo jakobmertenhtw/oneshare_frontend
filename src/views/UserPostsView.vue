@@ -15,17 +15,22 @@ export default {
       deleteModal: false,
       editModal: false,
 
-      currentPostID: 0, 
+      currentPostID: 0,
       currentPost: {},
-
     };
   },
   methods: {
     showDeleteModal(postID) {
+      // scroll to top of the page
+      window.scrollTo(0, 0);
+
       this.currentPostID = postID;
       this.deleteModal = true;
     },
     showEditModal(postID) {
+      // scroll to top of the page
+      window.scrollTo(0, 0);
+
       this.currentPostID = postID;
       this.editModal = true;
       this.allPosts.forEach((element) => {
@@ -45,7 +50,6 @@ export default {
       this.editModal = false;
     },
     deletePost() {
-
       const baseURL = "http://localhost:8080/";
       let endpoint = baseURL + "deletePost/" + this.currentPostID;
 
@@ -66,11 +70,8 @@ export default {
           window.alert("Something went wrong! Please try again later!");
           console.log(error);
         });
-
-
     },
     editPost() {
-
       const baseURL = "http://localhost:8080/";
       let endpoint = baseURL + "editPost/" + this.currentPostID;
 
@@ -82,7 +83,7 @@ export default {
         text: this.currentPost.text,
         likes: this.currentPost.likes,
         datum: this.currentPost.datum,
-      }
+      };
 
       let requestedOptions = {
         method: "PUT",
@@ -103,7 +104,6 @@ export default {
           window.alert("Something went wrong! Please try again later!");
           console.log(error);
         });
-
     },
 
     async getAllPosts() {
@@ -130,11 +130,9 @@ export default {
         console.log(error);
         return;
       }
-
     },
 
     async getGenresForPostsAndCurrentUser() {
-
       // get all genres
       const baseURL = "http://localhost:8080/";
       let endpoint = baseURL + "genres";
@@ -152,7 +150,6 @@ export default {
         this.allGenres = data;
 
         let genres = [];
-
 
         this.allPosts.forEach((element) => {
           this.allGenres.forEach((genre) => {
@@ -177,7 +174,6 @@ export default {
         const userData = await userResponse.json();
 
         this.currentUser = userData;
-
       } catch (error) {
         window.alert("Something went wrong! Please try again later!");
         console.log(error);
@@ -188,7 +184,6 @@ export default {
     },
 
     constructGenrePostsArray() {
-
       let genrePosts = [];
 
       this.genres.forEach((element) => {
@@ -314,8 +309,7 @@ export default {
       cols="30"
       rows="10"
       v-model="this.currentPost.text"
-    ></textarea
-    >
+    ></textarea>
     <div class="edit-buttons-container">
       <button id="edit-btn-edit" @click="editPost">EDIT</button>
       <button id="cancel-btn-edit" @click="dismissEditModal">CANCEL</button>
@@ -468,6 +462,7 @@ export default {
   border-right: 1px solid #e5e5e5;
   padding-right: 1rem;
   display: flex;
+  gap: 1rem;
   min-width: 13rem;
 }
 .profile-picture-container {
@@ -488,7 +483,6 @@ export default {
 }
 .profile-information-container {
   max-width: 8rem;
-  margin-left: 1rem;
   max-height: 3rem;
   overflow: hidden;
   display: flex;
@@ -530,5 +524,39 @@ export default {
 }
 #delete-post-btn {
   background-color: #ee4c4c;
+}
+
+@media (max-width: 1200px) {
+  .post-user-information-container {
+    flex-direction: column;
+    gap: 1rem
+  }
+  .post-user-information-container {
+    min-width: 9rem;
+  }
+}
+ 
+@media (max-width: 768px) {
+  .post-container-all {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 1.3rem;
+  }
+  .post-edit-container {
+    display: flex;
+    gap: 10px;
+  }
+  .post-main-container {
+    margin-bottom: 0;
+  }
+  .overlay-container-edit {
+    width: 90%;
+  }
+  .overlay-container-delete {
+    width: 90%;
+  }
+  .my-posts-main-container {
+    padding: 7rem 2rem;
+  }
 }
 </style>

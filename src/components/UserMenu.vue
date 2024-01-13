@@ -197,4 +197,16 @@ button:hover {
 #logout_btn {
   margin-bottom: 30px;
 }
+
+
+@media (max-width: 768px) {
+  .user-menu-container {
+    max-width: 100vw;
+    width: 100vw;
+    margin-left: 0;
+    margin-top: 0;
+    border-radius: 0;
+  }
+}
+
 </style>

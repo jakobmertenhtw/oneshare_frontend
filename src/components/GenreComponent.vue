@@ -14,15 +14,26 @@ export default {
    return { logo };
   }, 
 
+  data() {
+    return {
+      isHome: false,
+    };
+  },
+
   mounted() {
-    
+    // check the url is its home path or not
+    if (this.$route.path === "/user/dashboard") {
+      this.isHome = false;
+    } else {
+      this.isHome = true;
+    }
   },
 };
 </script>
 <template>
   <router-link :to="'/genre/id=' + genre.id" style="text-decoration: none;">
     <div class="genre-container">
-      <div class="image-container">
+      <div class="image-container" :class="{ 'home-path' : isHome }">
         <img :src="logo" :alt="genre.imagealt" />
       </div>
       <h4>{{ genre.name }}</h4>
@@ -45,5 +56,14 @@ h4 {
    color: black;
    font-weight: 500;
    font-size: 1.2rem;
+}
+
+
+@media screen and (max-width: 768px) {
+  .home-path img {
+    width: 100%;
+    max-height: 10rem;
+    object-fit: cover;
+  }
 }
 </style>

@@ -454,4 +454,26 @@ export default {
 .hover-effect:hover {
   opacity: 0.8;
 }
+
+
+@media (max-width: 768px) {
+  .main-container_post {
+    flex-direction: column;
+  }
+  .post-container {
+    min-height: 13rem;
+  }
+  .message-container {
+    height: 10rem;
+  }
+  .message-container textarea {
+    min-height: 5rem;
+  }
+  .user_information {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+
 </style>

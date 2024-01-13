@@ -55,4 +55,16 @@ export default {
   flex-direction: row;
   gap: 1rem;
 }
+
+@media (max-width: 768px) {
+  .posted-container {
+    flex-direction: column;
+    margin-bottom: 3rem;
+  }
+  .dashboard-main-container {
+    max-height: 200rem;
+    height: auto;
+  }
+}
+
 </style>

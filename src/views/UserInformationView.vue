@@ -179,4 +179,15 @@ input:focus {
   align-items: center;
   justify-content: center;
 }
+
+@media (max-width: 768px) {
+  .main-container-user-info {
+  padding: 7rem 2rem;
+}
+  .name-info {
+    flex-direction: column;
+  }
+}
+
+
 </style>

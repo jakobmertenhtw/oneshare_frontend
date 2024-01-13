@@ -330,4 +330,15 @@ ul {
   justify-content: center;
   min-height: 15rem;
 }
+
+@media screen and (max-width: 768px) {
+  header {
+    padding: 1.75rem 1.25rem;
+    min-height: 10rem;
+  }
+  .back_arrow {
+    left: .2;
+  }
+
+}
 </style>
