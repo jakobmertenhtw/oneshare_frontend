@@ -7,7 +7,9 @@ export default {
     genre: Object,
   },
   setup(props) {
+
    const logo = ref(null);
+
    watchEffect(async () => {
       logo.value = (await import(/* @vite-ignore */ `${props.genre.imagepath}`)).default
    })

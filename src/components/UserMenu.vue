@@ -66,19 +66,19 @@ export default {
         <li>
           <router-link class="menu_link" to="/user/dashboard"
             ><span class="link_text">Dashboard</span
-            ><span class="link_icon"><img src="./icons/right.svg" /></span
+            ><span class="link_icon"><img src="/icons/right.svg" /></span
           ></router-link>
         </li>
         <li>
           <router-link class="menu_link" to="/user/profile"
             ><span class="link_text">Profile Information</span
-            ><span class="link_icon"><img src="./icons/right.svg" /></span
+            ><span class="link_icon"><img src="/icons/right.svg" /></span
           ></router-link>
         </li>
         <li>
           <router-link class="menu_link" to="/user/posts"
             ><span class="link_text">My Posts</span
-            ><span class="link_icon"><img src="./icons/right.svg" /></span
+            ><span class="link_icon"><img src="/icons/right.svg" /></span
           ></router-link>
         </li>
       </ul>

@@ -17,7 +17,7 @@ export default {
 
 <template>
     <div class="back_arrow" @click="goBack">
-        <img src="./icons/back_arrow.svg" alt="back_arrow">
+        <img src="/icons/back_arrow.svg" alt="back_arrow">
     </div>
 </template>
 

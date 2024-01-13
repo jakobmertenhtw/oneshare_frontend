@@ -19,49 +19,49 @@ export default {
         {
           id: 1,
           name: "Jazz",
-          imagepath: "./images/jazz.png",
+          imagepath: "/images/jazz.png",
           imagealt: "Jazz Genre",
         },
         {
           id: 2,
           name: "Klassik",
-          imagepath: "./images/klassik.png",
+          imagepath: "/images/klassik.png",
           imagealt: "Rock Genre",
         },
         {
           id: 3,
           name: "Hip Hop",
-          imagepath: "./images/hiphop.png",
+          imagepath: "/images/hiphop.png",
           imagealt: "Hip Hop Genre",
         },
         {
           id: 4,
           name: "Pop",
-          imagepath: "./images/pop.png",
+          imagepath: "/images/pop.png",
           imagealt: "Pop Genre",
         },
         {
           id: 5,
           name: "EDM",
-          imagepath: "./images/edm.png",
+          imagepath: "/images/edm.png",
           imagealt: "EDM Genre",
         },
         {
           id: 6,
           name: "Heavy Metal",
-          imagepath: "./images/heavymetal.png",
+          imagepath: "/images/heavymetal.png",
           imagealt: "Heavy Metal Genre",
         },
         {
           id: 7,
           name: "Rock",
-          imagepath: "./images/rock.png",
+          imagepath: "/images/rock.png",
           imagealt: "Rock Genre",
         },
         {
           id: 8,
           name: "Funk",
-          imagepath: "./images/funk.png",
+          imagepath: "/images/funk.png",
           imagealt: "Funk Genre",
         },
       ],
@@ -84,24 +84,22 @@ export default {
     },
 
     // MAKE API CALLS AND WRITE DATA TO LIST
-    getPostsByGenreId(genreID) {
+    async getPostsByGenreId(genreID) {
       const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
-      const endpoint = baseURL + "/postsByGenre/" + genreID;
+      const endpoint = baseURL + "postsByGenre/" + genreID;
 
       const requestedOptions = {
         method: "GET",
         redirect: "follow",
       };
 
-      fetch(endpoint, requestedOptions)
-        .then((response) => response.json())
-        .then(async (data) => {
-          if (data.length === 0) {
-            window.alert("No posts found! Be the first to create one!");
-          }
-          this.list = data;
-          this.getUserInfosForEachPost();
-        });
+      const response = await fetch(endpoint, requestedOptions);
+      const data = await response.json();
+      if (data.length === 0) {
+        window.alert("No posts found! Be the first to create one!");
+      }
+      this.list = data;
+      this.getUserInfosForEachPost();
     },
 
     hideCreatePostAndLoadPosts() {
@@ -109,22 +107,20 @@ export default {
       this.getAllPostsInformaton();
     },
 
-    getUserInfosForEachPost() {
+    async getUserInfosForEachPost() {
       const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
 
-      this.list.forEach((post) => {
-        let endpoint = baseURL + "/users/" + post.userID;
+      this.list.forEach(async (post) => {
+        let endpoint = baseURL + "users/" + post.userID;
 
         const requestedOptions = {
           method: "GET",
           redirect: "follow",
         };
 
-        fetch(endpoint, requestedOptions)
-          .then((response) => response.json())
-          .then((data) => {
-            post.user = data;
-          });
+        const response = await fetch(endpoint, requestedOptions);
+        const data = await response.json();
+        post.user = data;
       });
     },
 
@@ -133,7 +129,7 @@ export default {
 
       // make api calls
       if (this.genreObject) {
-        this.getPostsByGenreId(this.genreObject.id);
+        await this.getPostsByGenreId(this.genreObject.id);
       }
 
       // wait for api calls to finish
@@ -149,13 +145,6 @@ export default {
           const post_element = document.getElementById(post_id);
           if (post_element) {
             post_element.scrollIntoView();
-          } else {
-            setTimeout(() => {
-              const post_element = document.getElementById(post_id);
-              if (post_element) {
-                post_element.scrollIntoView();
-              }
-            }, 1000);
           }
         }
       }, 1000);
@@ -337,8 +326,7 @@ ul {
     min-height: 10rem;
   }
   .back_arrow {
-    left: .2;
+    left: 0.2;
   }
-
 }
 </style>

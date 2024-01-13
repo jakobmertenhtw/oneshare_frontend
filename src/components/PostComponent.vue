@@ -196,7 +196,7 @@ export default {
             <div class="like_button-container">
               <button id="like-btn" @click="likePost">
                 <img
-                  src="./icons/heart_icon.svg"
+                  src="/icons/heart_icon.svg"
                   alt="Like Post"
                   v-if="!likeLoading"
                 />
@@ -216,7 +216,7 @@ export default {
           <div class="see_more-container">
             <button id="see-more-btn" @click="toggleMessages">
               <img
-                src="./icons/see_more_icon.svg"
+                src="/icons/see_more_icon.svg"
                 alt="See More"
                 :style="{ transform: showMessages ? 'rotate(90deg)' : 'none' }"
               />

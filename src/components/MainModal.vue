@@ -40,7 +40,7 @@ export default {
   <div class="main-modal" v-show="modalActive">
     <div class="close-container">
       <button class="close-btn" @click="closeModal">
-        <img src="./icons/close_icon.svg" alt="close" />
+        <img src="/icons/close_icon.svg" alt="close" />
       </button>
     </div>
     <div class="modal-content">
