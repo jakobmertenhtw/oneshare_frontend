@@ -190,7 +190,7 @@ export default {
   ></div>
   <div class="createpost-main" v-if="showCreatePost">
     <button id="close-btn" @click="hideOverlayCreatePost">
-      <img src="../components/icons/close_icon.svg" alt="close" />
+      <img src="/icons/close_icon.svg" alt="close" />
     </button>
     <CreatePostComponent
       @hideCreatePostAndLoadPosts="hideCreatePostAndLoadPosts"

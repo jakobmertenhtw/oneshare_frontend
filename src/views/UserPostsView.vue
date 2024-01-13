@@ -271,7 +271,7 @@ export default {
           <div class="post-edit-container">
             <div class="edit-post-container">
               <button id="edit-post-btn" @click="showEditModal(post.id)">
-                <img src="../components/icons/edit_icon.svg" alt="Edit Post" />
+                <img src="/icons/edit_icon.svg" alt="Edit Post" />
               </button>
             </div>
             <div class="delete-post-container">
