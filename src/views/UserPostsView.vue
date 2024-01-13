@@ -277,7 +277,7 @@ export default {
             <div class="delete-post-container">
               <button id="delete-post-btn" @click="showDeleteModal(post.id)">
                 <img
-                  src="../components/icons/delete_icon.svg"
+                  src="/icons/delete_icon.svg"
                   alt="Delete Post"
                 />
               </button>
