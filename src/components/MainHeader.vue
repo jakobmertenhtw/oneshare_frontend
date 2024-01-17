@@ -17,6 +17,9 @@ export default {
 </script>
 <template>
   <header>
+    <div class="logo-container">
+      <img src="/icons/logo.svg" alt="Logo">
+    </div>
     <div class="sign_btns">
       <button id="signin_btn" @click="openModal_SIGNUP">SIGN UP</button>
       <button id="signup_btn" @click="openModal_SIGNIN">SIGN IN</button>
@@ -31,6 +34,16 @@ header {
   margin: 0 auto;
   margin-top: 3rem;
   display: flex;
+  max-height: 3rem;
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+.logo-container img {
+  width: 7.5rem;
 }
 .sign_btns {
   display: flex;
